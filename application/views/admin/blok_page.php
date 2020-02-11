@@ -1,81 +1,62 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
 
+        <div class="card shadow mb-12">
+          <div class="card-header py-3">
+
             <!-- Page Heading -->
-            <div class="d-sm-flex align-items-center justify-content-center mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h1 class="h1 mb-0 text-gray-800 ">Data Blok</h1>
             </div>
 
-            <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
-                <button class="btn btn-primary" data-toggle="modal" data-target="#addmodal">Add</button>
+            <div class="card-body" style="background-color: #FFFFFF;">
+              <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
+                  <button class="btn btn-primary" data-toggle="modal" data-target="#addmodal">Add Blok</button>
+              </div>
+
+              <div class="d-sm-flex align-items-center mb-4">                
+                  <div class="btn-group">
+                      <select id='fl-perumahan' class="custom-select">
+                          <option selected value="default">Perumahan</option>
+                      </select>
+                  </div>
+                  <div class="btn-group">
+                      <select id='fl-cluster' class="custom-select">
+                          <option selected value="default">Cluster</option>
+                      </select>
+                  </div>
+
+                  <form class="d-none d-sm-inline-block form-inline ml-auto my-2 my-md-0 mw-100 navbar-search">
+                      <div class="input-group">
+                          <input type="text" id="searchbox" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+                          <div class="input-group-append">
+                                  <button class="btn btn-primary" type="button">
+                                  <i class="fas fa-search fa-sm"></i>
+                                  </button>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+
+              <!--table-->
+              <table id="table" class="table table-bordered table-striped">
+                  <thead>
+                      <tr>
+                          <th>Nama Blok</th>
+                          <th>Nama Customer</th>
+                          <th>Harga</th>
+                          <th>Action</th>
+                      </tr>
+                  </thead>
+                  <tbody>                      
+                  </tbody>
+              </table>
             </div>
-
-            <div class="d-sm-flex align-items-center justify-content-left mb-4">
-                
-                <div class="btn-group">
-                    <select class="custom-select">
-                        <option selected>Perumahan</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                </div>
-                <div class="btn-group">
-                    <select class="custom-select">
-                        <option selected>Cluster</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
-                </div>
-
-                <form class="d-none d-sm-inline-block form-inline ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                    <div class="input-group">
-                        <input type="text" id="searchbox" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                        <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                <i class="fas fa-search fa-sm"></i>
-                                </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <!--table-->
-            <table id="table" class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Nama Blok</th>
-                        <th>Nama Customer</th>
-                        <th>Harga</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>A2</td>
-                        <td>Budi Setiawan</td>
-                        <td>85.000</td>
-                        <td>
-                            <a href="<?php echo base_url('index.php/Main/blokdetail');?>"><button class="btn btn-outline-primary mt-10 mb-10">Detail</button></a>
-                            <button class="btn btn-outline-success mt-10 mb-10" data-toggle="modal" data-target="#editmodal">Edit</button>
-                            <button id="deletebutton" class="btn btn-danger mt-10 mb-10" onclick="deleteblok(get_cookie_decrypt('')">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>A3</td>
-                        <td>Siti</td>
-                        <td>78.000</td>
-                        <td>
-                            <a href="<?php echo base_url('index.php/Main/blokdetail');?>"><button class="btn btn-outline-primary mt-10 mb-10">Detail</button></a>
-                            <button class="btn btn-outline-success mt-10 mb-10">Edit</button>
-                            <button class="btn btn-danger mt-10 mb-10">Delete</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+          </div>        
         </div>
-        <!-- /.container-fluid -->
+        <!-- card body -->
+      </div>
+      <!-- /.container-fluid -->
 
         <!-- modal edit -->
         <div class="modal fade" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="editTitle" aria-hidden="true">
@@ -88,39 +69,34 @@
                 </button>
               </div>
               <div class="modal-body">
-                <form>
+                <form>          
                     <div class="form-group">
-                        <label for="id-blok" class="col-form-label">Id Blok:</label>
-                        <input type="text" class="form-control" id="id-blok" value="" readonly>
-                    </div>
+                        <label for="nama-blok1" class="col-form-label">Nama Blok:</label>
+                        <input type="text" class="form-control" id="nama-blok1" readonly>
+                    </div>          
                     <div class="form-group">
-                        <label for="nama-perumahan" class="col-form-label">Nama Perumahan:</label>
-                        <select class="custom-select">
-                            <option selected>Zero</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                        <label for="perumahan1" class="col-form-label">Nama Perumahan:</label>
+                        <select class="custom-select" id="perumahan1">                            
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="nama-cluster" class="col-form-label">Nama Cluster:</label>
-                        <select class="custom-select">
-                            <option selected>Zero</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                        <label for="cluster1" class="col-form-label">Nama Cluster:</label>
+                        <select class="custom-select" id="cluster1">                            
                         </select>
+                    </div>                    
+                    <div class="form-group">
+                        <label for="nama-customer1" class="col-form-label">ID Customer:</label>
+                        <input type="text" class="form-control" id="nama-customer1">
                     </div>
                     <div class="form-group">
-                        <label for="nama-blok" class="col-form-label">Nama Blok:</label>
-                        <input type="text" class="form-control" id="nama-blok">
+                        <label for="harga1" class="col-form-label">Harga:</label>
+                        <input type="text" class="form-control" id="harga1">
                     </div>
-                 
                 </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary">Update</button>
+                <button type="button" class="btn btn-primary" id="updatedata">Update</button>
               </div>
             </div>
           </div>
@@ -143,33 +119,25 @@
                     <input type="text" class="form-control" id="id-cluster" placeholder="ID Blok...">
                   </div>
                   <div class="form-group">
-                    <label for="nama-perumahan" class="col-form-label">Nama Perumahan:</label>
-                    <select class="custom-select">
-                        <option selected>Zero</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                    <label for="perumahan" class="col-form-label">Nama Perumahan:</label>
+                    <select class="custom-select" id="perumahan">                
                     </select>
                   </div>
                   <div class="form-group">
-                    <label for="nama-cluster" class="col-form-label">Nama Cluster:</label>
-                    <select class="custom-select">
-                        <option selected>Zero</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
+                    <label for="cluster" class="col-form-label">Nama Cluster:</label>
+                    <select class="custom-select" id="cluster">
                     </select>
                   </div>
                   <div class="form-group">
-                    <label for="nama-blok" class="col-form-label">Nama Blok:</label>
-                    <input type="text" class="form-control" id="nama-blok" placeholder="Nama Blok...">
+                    <label for="harga" class="col-form-label">Harga:</label>
+                    <input type="text" class="form-control" id="harga">
                   </div>
                  
                 </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary">Add</button>
+                <button type="button" class="btn btn-primary" onclick="insertdata()">Add</button>
               </div>
             </div>
           </div>
@@ -177,21 +145,7 @@
 
       </div>
       <!-- End of Main Content -->
-
-        <script>
-
-        function deleteblok(id) {
-            $.ajax({
-                    url: "<?php echo base_url() ?>index.php/delete_blok/" + id,
-                    success: function (response) {
-                        if (response==="success") {
-                            location.reload();
-                        }
-                    }
-                });
-        }
-        </script>
-
+    
       <!-- Footer -->
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
@@ -232,7 +186,6 @@
         </div>
     </div>
 
-    <?php include('edit_modal.php')?>
     <!-- Bootstrap core JavaScript-->
     <script src="<?php echo base_url('dist/vendor/jquery/jquery.min.js');?>"></script>
     <script src="<?php echo base_url('dist/vendor/bootstrap/js/bootstrap.bundle.min.js');?>"></script>
@@ -243,15 +196,242 @@
     <!-- Custom scripts for all pages-->
     <script src="<?php echo base_url('dist/js/sb-admin-2.min.js');?>"></script>
 
-    <!-- Page level plugins -->
-    <script src="<?php echo base_url('dist/vendor/chart.js/Chart.min.js');?>"></script>
+    <script src="<?php echo base_url('dist/vendor/datatables/jquery.dataTables.js');?>"></script>
+    <script src="<?php echo base_url('dist/js/table.js');?>"></script>
 
-    <!-- Page level custom scripts -->
-    <script src="<?php echo base_url('dist/js/demo/chart-area-demo.js');?>"></script>
-    <script src="<?php echo base_url('dist/js/demo/chart-pie-demo.js');?>"></script>
+    <script>
+      $.ajax({
+        url: "<?php echo base_url() ?>index.php/Main/get_all_perumahan",
+        type: 'POST',
+        success: function (json) {
+          var response = JSON.parse(json);
+          response.forEach((data)=>{
+            $('#fl-perumahan').append(new Option(data.nama_perumahan, data.IDPerumahan))
+            $('#perumahan1').append(new Option(data.nama_perumahan, data.IDPerumahan))
+            $('#perumahan').append(new Option(data.nama_perumahan, data.IDPerumahan))            
+          })
+        },
+        error: function (xhr, status, error) {
+          alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
+          $("#submit").prop("disabled", false);
+        }
+      });
 
-	<script src="<?php echo base_url('dist/vendor/datatables/jquery.dataTables.js');?>"></script>
-	<script src="<?php echo base_url('dist/js/table.js');?>"></script>
+// fl-perumahan
+      $("#fl-perumahan").change(function (e) { 
+        e.preventDefault();
+        if($("#fl-perumahan").val() != "default"){
+          getClusterofPerumahan($("#fl-perumahan").val());
+        }
+        else{
+          $("#fl-cluster option[value!=default]").remove();
+        }
+        get_data();
+      });
+
+      $("#fl-cluster").change(function (e) { 
+        e.preventDefault();
+        get_data();
+      });
+
+//perumahan1
+      $("#perumahan1").change(function (e) { 
+        e.preventDefault();
+        if($("#perumahan1").val() != "default"){
+          getClusterofPerumahan($("#perumahan1").val());
+        }
+        else{
+          $("#cluster1 option[value!=default]").remove();
+        }
+        get_data();
+      });
+
+      $("#cluster1").change(function (e) { 
+        e.preventDefault();
+        get_data();
+      });
+
+// perumahan
+      $("#perumahan").change(function (e) { 
+        e.preventDefault();
+        if($("#perumahan").val() != "default"){
+          getClusterofPerumahan($("#perumahan").val());
+        }
+        else{
+          $("#cluster option[value!=default]").remove();
+        }
+        get_data();
+      });
+
+      $("#cluster").change(function (e) { 
+        e.preventDefault();
+        get_data();
+      });
+
+
+      function getClusterofPerumahan(id){
+        $.ajax({
+          url: "<?php echo base_url() ?>index.php/Main/get_cluster_by_perumahan",
+          type: 'POST',
+          data: {id: id},
+          success: function (json) {
+            $("#fl-cluster option[value!=default]").remove();
+            $("#cluster1 option[value!=default]").remove();
+            $("#cluster option[value!=default]").remove();
+            var response = JSON.parse(json);
+            response.forEach((data)=>{
+              $('#fl-cluster').append(new Option(data.nama_cluster, data.IDCluster))
+              $('#cluster1').append(new Option(data.nama_cluster, data.IDCluster))
+              $('#cluster').append(new Option(data.nama_cluster, data.IDCluster))
+            })
+          },
+          error: function (xhr, status, error) {
+            alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
+            $("#submit").prop("disabled", false);
+          }
+        });
+      }
+      
+
+    function get_filter_value(){
+      var perumahan = $("#fl-perumahan").val();
+      if(perumahan == "default"){
+        perumahan = null;
+      }
+      var cluster = $("#fl-cluster").val();
+      if(cluster == "default"){
+        cluster = null;
+      }
+
+      return {
+        perumahan: perumahan,
+        cluster: cluster
+      }
+    }
+
+    $(document).ready(function () { 
+      dTable = $('#table').DataTable();
+      get_data()
+    });
+
+    function get_data(){
+      var data = get_filter_value()
+      $.ajax({
+        url: "<?php echo base_url() ?>index.php/Main/get_all_blok",
+        type: 'POST',
+        data:data,
+        success: function (json) {
+          var response = JSON.parse(json);
+          dTable.clear().draw();
+          response.forEach((data)=>{
+            no = data.IDBlok  
+            if(data.IDBlok != null) {
+              dTable.row.add([
+                data.IDBlok,
+                data.nama,
+                data.Harga,                
+                  '<button class="btn btn-outline-success mt-10 mb-10"><a onclick=tampildata("'+ no +'") >Edit</a></button>'
+                + '<button class="btn btn-danger mt-10 mb-10" ><a onclick=hapusdata("'+ no +'") >Delete</a></button>'              
+              ]).draw(false);
+            }            
+          })
+        },    
+        error: function (xhr, status, error) {
+          alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
+          $("#submit").prop("disabled", false);
+        }
+      });
+    }
+
+    function hapusdata(id) {
+      var tanya = confirm("hapus data?");
+
+      if(tanya){
+        $.ajax({
+          url: "<?php echo base_url() ?>index.php/Main/delete_blok",
+          type: 'POST',
+          data: {id: id},
+          success: function (response) {
+              console.log(response);
+              window.location = "<?php echo base_url() ?>index.php/Main/blok";
+
+          },
+          error: function () {
+              console.log("gagal menghapus");
+
+          }
+        });
+      }
+    }
+
+    function tampildata(id) {
+      $.ajax({
+        url: "<?php echo base_url()?>index.php/Main/get_blok_by_id",
+        type: 'POST',
+        data: {id: id},
+        success: function (response) {
+          var response = JSON.parse(response);
+          console.log('ooo');
+          response.forEach((data)=>{
+            $('#editmodal').modal();
+            $('#nama-blok1').val(data.IDBlok);
+            $('#perumahan1').val(data.IDPerumahan);
+            $('#cluster1').append(new Option(data.nama_cluster, data.IDCluster))
+            $('#nama-customer1').val(data.IDCustomer);
+            $('#harga1').val(data.Harga);
+            // console.log(response);
+            $('#updatedata').click(function editdata() {
+            
+            var inputperumahan = document.getElementById("perumahan1").value
+            var inputcluster = document.getElementById("cluster1").value
+            var inputid = document.getElementById("nama-blok1").value
+            var inputcust = document.getElementById("nama-customer1").value
+            var inputharga = document.getElementById("harga1").value
+                               
+              $.ajax({
+                url: "<?php echo base_url()?>index.php/Main/update_blok/",
+                type: 'POST',
+                data: {customer:inputcust, id:inputid, perumahan:inputperumahan, cluster:inputcluster, harga:inputharga},
+                success: function (response) {                           
+                  window.location = "<?php echo base_url() ?>index.php/Main/blok";
+                },
+                error: function () {
+                  console.log("gagal update");
+                }
+              });
+            });
+          })                
+        },
+        error: function () {
+            console.log("gagal tampil");
+        }
+      });          
+    }
+
+    function insertdata() {
+      var inputid = document.getElementById("id-cluster").value
+      var inputperum = document.getElementById("perumahan").value
+      var inputcluster = document.getElementById("cluster").value
+      var inputharga = document.getElementById("harga").value
+
+      console.log(inputcluster);
+      $.ajax({
+        url: "<?php echo base_url()?>index.php/Main/insert_blok/",
+        type: 'POST',
+        data: {id:inputid, perum:inputperum, cluster:inputcluster, harga:inputharga},
+        success: function (response) {
+          console.log(response);
+          window.location = "<?php echo base_url() ?>index.php/Main/blok";
+        },
+        error: function () {
+          console.log("gagal update");
+        }
+      });
+
+    }
+
+
+    </script>
 </body>
 
 </html>
