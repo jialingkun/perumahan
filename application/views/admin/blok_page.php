@@ -81,7 +81,8 @@
                     </div>
                     <div class="form-group">
                         <label for="cluster1" class="col-form-label">Nama Cluster:</label>
-                        <select class="custom-select" id="cluster1">                            
+                        <select class="custom-select" id="cluster1">
+                        <option value="default">Cluster</option>                
                         </select>
                     </div>                    
                     <div class="form-group">
@@ -352,7 +353,6 @@
           type: 'POST',
           data: {id: id},
           success: function (response) {
-              console.log(response);
               window.location = "<?php echo base_url() ?>index.php/Main/blok";
 
           },
@@ -371,15 +371,33 @@
         data: {id: id},
         success: function (response) {
           var response = JSON.parse(response);
-          console.log('ooo');
           response.forEach((data)=>{
             $('#editmodal').modal();
             $('#nama-blok1').val(data.IDBlok);
             $('#perumahan1').val(data.IDPerumahan);
-            $('#cluster1').append(new Option(data.nama_cluster, data.IDCluster))
+
+            $.ajax({
+              url: "<?php echo base_url() ?>index.php/Main/get_cluster_by_perumahan",
+              type: 'POST',
+              data: {id: $("#perumahan1").val()},
+              success: function (json) {
+                $("#cluster1 option[value!=default]").remove();
+                var response = JSON.parse(json);
+                response.forEach((dt)=>{
+                  $('#cluster1').append(new Option(dt.nama_cluster, dt.IDCluster))
+                })
+                $('#cluster1').val(data.IDCluster);
+              },
+              error: function (xhr, status, error) {
+                alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
+                $("#submit").prop("disabled", false);
+              }
+            });
+
+            // $('#cluster1').append(new Option(data.nama_cluster, data.IDCluster, true, true))
+            
             $('#nama-customer1').val(data.IDCustomer);
             $('#harga1').val(data.Harga);
-            // console.log(response);
             $('#updatedata').click(function editdata() {
             
             var inputperumahan = document.getElementById("perumahan1").value
@@ -414,17 +432,15 @@
       var inputcluster = document.getElementById("cluster").value
       var inputharga = document.getElementById("harga").value
 
-      console.log(inputcluster);
       $.ajax({
         url: "<?php echo base_url()?>index.php/Main/insert_blok/",
         type: 'POST',
         data: {id:inputid, perum:inputperum, cluster:inputcluster, harga:inputharga},
         success: function (response) {
-          console.log(response);
           window.location = "<?php echo base_url() ?>index.php/Main/blok";
         },
         error: function () {
-          console.log("gagal update");
+          console.log("gagal insert");
         }
       });
 

@@ -288,6 +288,7 @@ class Main extends CI_Controller {
 			echo json_encode($data);
 		}
 	}
+
 	//ambil data blok
 	//parameter 1: true bila ingin return array, kosongi bila ingin Json
 	public function get_all_blok($return_var = NULL){
@@ -318,6 +319,36 @@ class Main extends CI_Controller {
 			echo json_encode($data);
 		}
 	}
+
+	//ambil data blok punya customer
+	//parameter 1: true bila ingin return array, kosongi bila ingin Json
+	public function get_blok_detail($return_var = NULL){
+		$perumahan = $this->input->post('perumahan');
+		$cluster = $this->input->post('cluster');
+		$data = $this->BlokModel->get_all(null, $perumahan, $cluster);
+			if (empty($data)){
+				$data = [];
+			}
+			if ($return_var == true) {
+				return $data;
+			}else{
+				echo json_encode($data);
+			}
+	}
+
+	//detailblok customer
+	public function get_blok_customer($id, $return_var = NULL){
+		$data = $this->Default_model->get_detail($id);
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
 
 	//ambil data staff
 	//parameter 1: true bila ingin return array, kosongi bila ingin Json
@@ -448,7 +479,17 @@ class Main extends CI_Controller {
 		}
 	}
 
-	
+	public function get_my_profile(){
+		$username = $this->get_cookie_decrypt("adminCookie");
+		if($username == NULL){
+			$username = $this->get_cookie_decrypt("staffCookie");
+		}
+		$data = $this->Default_model->get_data_user_nopassword($username);
+		if (empty($data)){
+			$data = [];
+		}
+		echo json_encode($data);
+	}
 
 	//INSERT
 
@@ -487,7 +528,7 @@ class Main extends CI_Controller {
 	public function insert_cluster() {
 		if ($this->checkcookieuser()) {
 			$perumahan =  $this->input->post('perum');
-			$idperum = $this->ClusterModel->get_perumahan($perumahan);
+			$idperum = $this->PerumahanModel->get_perumahan($perumahan);
 
 			$data = array(
 				'IDCluster' => $this->input->post('id'),
@@ -544,7 +585,7 @@ class Main extends CI_Controller {
 			$nomor =  $this->input->post('nomor');
 			$perumahan = $this->input->post('perum');
 			$staff = "staff";
-			$idperum = $this->ClusterModel->get_perumahan($perumahan);
+			// $idperum = $this->PerumahanModel->get_perumahan($perumahan);
 
 			$data = array(
 				'username' => $username,
@@ -554,12 +595,12 @@ class Main extends CI_Controller {
 				'nomor' => $nomor
 			);
 
-			$data1 = array(
-				'username' => $username,
-				'status' => '1'
-			);
+			// $data1 = array(
+			// 	'username' => $username,
+			// 	'status' => '1'
+			// );
 
-			$where= array('IDPerumahan' => $idperum );
+			// $where= array('IDPerumahan' => $idperum );
 			// $updateperumahan = $this->PerumahanModel->update($where, $data1);
 			$insertStatus = $this->StaffModel->insert($data);
 			echo $insertStatus;
@@ -623,7 +664,7 @@ class Main extends CI_Controller {
 		$perumahan = $this->input->post('perumahan');
 		$nama = $this->input->post('nama');
 
-		$idperum = $this->ClusterModel->get_perumahan($perumahan);
+		$idperum = $this->PerumahanModel->get_perumahan($perumahan);
 
 		$data = array(
 			'nama_cluster' => $nama,
@@ -632,8 +673,6 @@ class Main extends CI_Controller {
 		
 		$where= array('IDCluster' => $id );
         $this->ClusterModel->update($where, $data);
-
-		echo $idperum;
 	}
 
 	//Edit data blok
@@ -642,15 +681,20 @@ class Main extends CI_Controller {
 		$perumahan = $this->input->post('perumahan');
 		$cluster = $this->input->post('cluster');
 		$customer = $this->input->post('customer');
-		$harga = $this->input->post('harga');
-				
-		// $idcustomer = $this->CustomerModel->get_customer($customer);
+		$harga = $this->input->post('harga');		
 
-		$data = array(
-			'IDCustomer' => $customer,
-			'IDCluster' => $cluster,
-			'harga' => $harga
-		);
+		if ($customer==null){
+			$data = array(
+				'IDCluster' => $cluster,
+				'Harga' => $harga
+			);
+		} else {
+			$data = array(
+				'IDCustomer' => $customer,
+				'IDCluster' => $cluster,
+				'Harga' => $harga
+			);
+		}
 		
 		$where= array('IDBlok' => $id );
         $this->BlokModel->update($where, $data);
@@ -722,7 +766,35 @@ class Main extends CI_Controller {
 		
 	}
 	
+	public function update_profile(){
+		$nama = $this->input->post('nama');
+		$nomor = $this->input->post('nomor');
+		$email = $this->input->post('email');
+		$password = $this->input->post('password');
 
+		$id = $this->get_cookie_decrypt("adminCookie");
+		if($id == NULL){
+			$id = $this->get_cookie_decrypt("staffCookie");
+		}
+		
+		if($password == NULL){
+			$data = array(
+				'nama' => $nama,
+				'nomor' => $nomor,
+				'email' => $email
+			);
+		} else{
+			$data = array(
+				'nama' => $nama,
+				'nomor' => $nomor,
+				'email' => $email,
+				'password'=> $password
+			);
+		}
+		$deleteStatus = $this->Default_model->update_user($id, $data);
+
+		echo "Data saved !";
+	}
 
 
 	//DELETE
@@ -752,9 +824,10 @@ class Main extends CI_Controller {
 		}
 	}
 
-	public function delete_customer($id) {
+	public function delete_customer() {
 		if ($this->checkcookieuser()) {
-			$deleteStatus = $this->CustomerModel->delete($id);
+			$username = $this->input->post('id');
+			$deleteStatus = $this->CustomerModel->delete($username);
 			echo $deleteStatus;
 		}else{
 			echo "access denied";
