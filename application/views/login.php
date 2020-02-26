@@ -35,19 +35,25 @@
               <div class="col-lg-12">
                 <div class="p-5">
                   <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                    <h1 class="h4 text-gray-900 mb-4"><i>Welcome</i></h1>
                   </div>
+
+                  <div class="form-group"><br></div>
+                  <div class="alert alert-danger print-error-msg" style="display:none"></div>    
+
                   <form id="form" method="POST">
                     <div class="form-group">
-                      <label for="usr">Username:</label>
+                      <center><label for="usr">Username</label></center>
                       <input type="text" class="form-control form-control-user" name="username">
                     </div>
+                    
                     <div class="form-group">
-                      <label for="usr">Password:</label>
+                      <center><label for="usr">Password</label></center>
                       <input type="password" class="form-control form-control-user" name="password">
                     </div>
+                    <div class="form-group"><br></div>
                     <hr>
-                    <button id="submit" type="submit" class="btn btn-primary center-item">Sign In</button>
+                    <center><button id="submit" type="submit" class="btn btn-primary center-item">Sign In</button></center>
                     <hr>
                   </form>                 
                   
@@ -78,30 +84,55 @@
       event.preventDefault();
       var dataString = $("#form").serialize();
       $("#submit").prop("disabled", true);
-      $.ajax({
-        url: "<?php echo base_url() ?>index.php/Main/cekloginuser",
-        type: 'POST',
-        data: dataString,
-        success: function (response) {
-          if (response == "Selamat Datang Admin") {
-            window.location.replace("<?php echo base_url() ?>index.php/Main/dashboardadmin");
-          } else {
-            alert(response);
-            $("#submit").prop("disabled", false);
-          }
 
-          if (response == "Login Berhasil") {
-            window.location.replace("<?php echo base_url() ?>index.php/Main/dashboardstaff");
-          } else {
-            alert(response);
-            $("#submit").prop("disabled", false);
+      $.ajax({
+          url: "<?php echo base_url() ?>index.php/Main/aksilogin",
+          type:'POST',
+          dataType: "json",
+          data: dataString,
+          success: function(data) {
+            if($.isEmptyObject(data.error)){
+              $(".print-error-msg").css('display','none');
+
+                $.ajax({
+                url: "<?php echo base_url() ?>index.php/Main/cekloginuser",
+                type: 'POST',
+                data: dataString,
+                success: function (response) {
+                  console.log(response);
+                  if (response == "admin") {
+                    window.location.replace("<?php echo base_url() ?>index.php/Main/dashboardadmin");
+                    alert("Selamat Datang Admin");
+                  } else if (response == "staff") {
+                    window.location.replace("<?php echo base_url() ?>index.php/Main/dashboardstaff");
+                    alert("Selamat Datang Staff");
+                  } else {    
+                    alert("password atau email salah!");
+              
+                    $("#submit").prop("disabled", false);
+                  }
+                
+                },
+                error: function (xhr, status, error) {
+                  alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
+                  $("#submit").prop("disabled", false);
+                }
+              });
+
+
+
+
+            }else{
+              $(".print-error-msg").css('display','block');
+              $(".print-error-msg").html(data.error);
+              $("#submit").prop("disabled", false);
+
+            }
           }
-        },
-        error: function (xhr, status, error) {
-          alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
-          $("#submit").prop("disabled", false);
-        }
       });
+
+
+      // 
     });
 
   </script>

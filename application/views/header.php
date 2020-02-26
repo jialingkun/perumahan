@@ -15,10 +15,13 @@
   <link href="<?php echo base_url('dist/vendor/fontawesome-free/css/all.min.css');?>" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css"href="https://cdn.datatables.net/fixedheader/3.1.6/css/fixedHeader.bootstrap.min.css">
+  <link rel="stylesheet" type="text/css"href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.bootstrap.min.css">
+  <script src="<?=base_url('dist/vendor/jquery/jquery.min.js');?>"></script>
+
 
   <!-- Custom styles for this template-->
   <link href="<?php echo base_url('dist/css/sb-admin-2.min.css');?>" rel="stylesheet">
-
 </head>
 
 <body id="page-top">
@@ -30,52 +33,46 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
-        <div class="sidebar-brand-text mx-3">Admin Master</div>
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
       </a>
 
       <!-- Divider -->
       <hr class="sidebar-divider my-0">
 
-       <!-- Nav Item - perumahan -->
-       <li class="nav-item">
-        <a class="nav-link" href="<?php echo base_url('index.php/Main/dashboardadmin');?>">
-          <i class="fas fa-fw fa-table"></i>
-          <span>Data Perumahan</span></a>
+      <!-- Nav Item - Pages Collapse Menu -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+        <i class="fas fa-fw fa-folder"></i>
+          <span>Perumahan</span>
+        </a>
+        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Data Sistem:</h6>
+            <a class="collapse-item" href="<?php echo base_url('index.php/Main/dashboardadmin');?>">Data Perumahan</a>
+            <a class="collapse-item" href="<?php echo base_url('index.php/Main/cluster');?>">Data Cluster</a>
+            <a class="collapse-item" href="<?php echo base_url('index.php/Main/blok');?>">Data Blok</a>            
+          </div>
+        </div>
       </li>
          
-      <!-- Nav Item - cluster -->
-      <li class="nav-item">
-        <a class="nav-link" href="<?php echo base_url('index.php/Main/cluster');?>">
-          <i class="fas fa-fw fa-table"></i>
-          <span>Data Cluster</span></a>
-      </li>
-
-      <!-- Nav Item - blok -->
-      <li class="nav-item">
-        <a class="nav-link" href="<?php echo base_url('index.php/Main/blok');?>">
-          <i class="fas fa-fw fa-table"></i>
-          <span>Data Blok</span></a>
-      </li>
-
       <!-- Nav Item - customer -->
       <li class="nav-item">
         <a class="nav-link" href="<?php echo base_url('index.php/Main/customer');?>">
-          <i class="fas fa-fw fa-table"></i>
+          <i class="fa fa-book"></i>
           <span>Data Customer</span></a>
       </li>
 
       <!-- Nav Item - staff -->
       <li class="nav-item">
         <a class="nav-link" href="<?php echo base_url('index.php/Main/staff');?>">
-          <i class="fas fa-fw fa-table"></i>
+          <i class="fa fa-book"></i>
           <span>Data Staff</span></a>
       </li>
 
       <!-- Nav Item - arsip -->
       <li class="nav-item">
         <a class="nav-link" href="<?php echo base_url('index.php/Main/arsipdata');?>">
-          <i class="fas fa-fw fa-table"></i>
+          <i class="fa fa-archive"></i>
           <span>Data Arsip</span></a>
       </li>
 
@@ -119,7 +116,7 @@
                   <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                   Profile
                 </a>
-                <a class="dropdown-item" href="#">
+                <a class="dropdown-item" href="<?php echo base_url() ?>index.php/main/changepassword">
                   <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
                   Change Password
                 </a>
@@ -135,3 +132,72 @@
 
         </nav>
         <!-- End of Topbar -->
+        
+  <style>
+  @media (max-width:768px) {
+    .accordion {
+      z-index: 99;
+      position: fixed;
+    }
+    .sidebar .nav-item .nav-link span{
+      font-size: .75rem;
+    }
+  }
+  </style>
+  <script>
+    $(document).ready(function(){
+      var elements = document.getElementsByTagName("INPUT");
+      for (var i = 0; i < elements.length; i++) {
+        if(elements[i].type != "email"){
+          elements[i].oninvalid = function(e) {
+            e.target.setCustomValidity("");
+            if (!e.target.validity.valid) {
+              e.target.setCustomValidity("Isian tidak boleh kosong!");
+            }
+          };
+        } else{
+          elements[i].oninvalid = function(e) {
+            e.target.setCustomValidity("");
+            if (!e.target.validity.valid) {
+              e.target.setCustomValidity("Harus diisi dengan email!");
+            }
+          };
+        }
+        elements[i].oninput = function(e) {
+          e.target.setCustomValidity("");
+        };
+      }
+    })
+    sidebarOverlay()
+    $( window ).resize(function() {
+      sidebarOverlay()
+    });
+    function sidebarOverlay(){
+      var sidebarbrand = document.getElementsByClassName("sidebar-brand")
+      sidebarbrand[0].innerHTML = '<div class="sidebar-brand-text mx-3">Admin Master</div>'+
+        '<button class="sidebar-brand-text btn rounded-circle mx-3" style="color:white"><i class="fa fa-bars"></i></button>'
+
+      var accordion = document.querySelector(".accordion")
+      var style = getComputedStyle(accordion)
+      if(style.position == "fixed"){
+        document.getElementsByTagName("body")[0].classList.add("sidebar-toggled")
+        accordion.classList.add("toggled")
+
+        document.getElementsByClassName("sidebar-brand")[0].onclick = function(event){
+          document.getElementById("sidebarToggleTop").click();
+        }
+        var element = document.getElementsByClassName("sidebar-brand-text");
+        element[1].style.display = "inline-block"
+        element[0].remove();
+      } else{
+        var element = document.getElementsByClassName("sidebar-brand-text");
+        document.getElementsByTagName("body")[0].classList.remove("sidebar-toggled")
+        accordion.classList.remove("toggled")
+
+        sidebarbrand[0].onclick = function(event){
+          event.preventDefault()
+        }
+        element[1].remove();
+      }
+    }
+  </script>

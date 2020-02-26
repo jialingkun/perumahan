@@ -6,10 +6,15 @@
 
             <!-- Page Heading -->
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-              <h1 class="h1 mb-0 text-gray-800 ">Data Arsip Pembayaran</h1>
+              <h1 class="h1 mb-0 text-gray-800">Data Arsip Pembayaran</h1>
             </div>
 
             <div class="card-body" style="background-color: #FFFFFF;">
+
+              <div class="d-sm-flex align-items-center justify-content-between mb-4"> 
+                  <button class="btn btn-primary" onclick=getData()>Add Tagihan bulanan</button>
+              </div>
+
               <div class="d-sm-flex align-items-center mb-4">						
                 <div class="btn-group">
                   <select id='fl-perumahan' class="custom-select">
@@ -21,21 +26,11 @@
                     <option selected value="default">Cluster</option>
                   </select>
                 </div>
-												
-                <form class="d-none d-sm-inline-block form-inline ml-auto my-2 my-md-0 mw-100 navbar-search">
-                  <div class="input-group">
-                    <input type="text" id="searchbox" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search fa-sm"></i>
-                        </button>
-                    </div>
-                  </div>
-                </form>
+								
               </div>
 
               <!--table-->
-              <table id="table" class="display">
+              <table id="table1" class="table table-striped table-bordered nowrap" style="width:100%">
                 <thead>
                   <tr>
                     <th>ID Customer</th>
@@ -55,46 +50,6 @@
       </div>
       <!-- End of Main Content -->
 
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2019</span>
-          </div>
-        </div>
-      </footer>
-      <!-- End of Footer -->
-
-    </div>
-    <!-- End of Content Wrapper -->
-
-  </div>
-  <!-- End of Page Wrapper -->
-
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
-
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="<?=base_url("index.php/Main/logoutuser");?>">Logout</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Bootstrap core JavaScript-->
   <script src="<?php echo base_url('dist/vendor/jquery/jquery.min.js');?>"></script>
   <script src="<?php echo base_url('dist/vendor/bootstrap/js/bootstrap.bundle.min.js');?>"></script>
@@ -104,6 +59,13 @@
 
   <!-- Custom scripts for all pages-->
   <script src="<?php echo base_url('dist/js/sb-admin-2.min.js');?>"></script>
+  
+  <!-- responsive  -->
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+  <script src="https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
 
 	<script src="<?php echo base_url('dist/vendor/datatables/jquery.dataTables.js');?>"></script>
 	<script src="<?php echo base_url('dist/js/table.js');?>"></script>
@@ -119,7 +81,7 @@
           })
         },
         error: function (xhr, status, error) {
-          alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
+          alert('Terdapat Kesalahan Pada Server...');
           $("#submit").prop("disabled", false);
         }
       });
@@ -130,12 +92,15 @@
       $("#fl-perumahan").change(function (e) { 
         e.preventDefault();
         if($("#fl-perumahan").val() != "default"){
-          getClusterofPerumahan($("#fl-perumahan").val());
+          getClusterofPerumahan($("#fl-perumahan").val(), function(){
+            get_transaksi()
+            console.log($("#fl-cluster").val())
+          });
         }
         else{
           $("#fl-cluster option[value!=default]").remove();
+          get_transaksi();
         }
-        get_transaksi();
       });
 
       $("#fl-cluster").change(function (e) { 
@@ -143,7 +108,7 @@
         get_transaksi();
       });
       
-      function getClusterofPerumahan(id){
+      function getClusterofPerumahan(id,callback){
         $.ajax({
           url: "<?php echo base_url() ?>index.php/Main/get_cluster_by_perumahan",
           type: 'POST',
@@ -154,9 +119,10 @@
             response.forEach((data)=>{
               $('#fl-cluster').append(new Option(data.nama_cluster, data.IDCluster))
             })
+            callback();
           },
           error: function (xhr, status, error) {
-            alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
+            alert('Terdapat Kesalahan Pada Server...');
             $("#submit").prop("disabled", false);
           }
         });
@@ -180,6 +146,7 @@
     }
 
     function get_transaksi(){
+      $(".dataTables_empty").text("Loading...")
       var data = get_filter_value()
       $.ajax({
         url: "<?php echo base_url() ?>index.php/Main/get_transaksi",
@@ -187,22 +154,24 @@
         data: data,
         success: function (json) {
           var response = JSON.parse(json);
-          console.log(response)
-          dTable.clear().draw();
-          response.forEach((data)=>{
-            dTable.row.add([
-              data.nama, 
-              data.IDBlok,
+          if(response.length > 0){
+            dTable.clear().draw();
+            response.forEach((data)=>{
+              dTable.row.add([
+                data.nama, 
+                data.nama_blok,
+                
+                '<button class="btn btn-outline-primary mt-10 mb-10" onclick=goToArsip("'+data.IDBlok+'")>Arsip</button></a>'
+                + '<button class="btn btn-outline-success mt-10 mb-10" onclick=goToTagihan("'+data.IDBlok+'")>Tagihan</button></a>'
+              ]).draw(false);
               
-              '<button class="btn btn-outline-primary mt-10 mb-10" onclick=goToArsip("'+data.IDBlok+'")>Arsip</button></a>'
-              + '<button class="btn btn-outline-success mt-10 mb-10" onclick=goToTagihan("'+data.IDBlok+'")>Tagihan</button></a>'
-            ]).draw(false);
-            
-          })
-          // $("tbody").append()
+            })
+          } else{
+            $(".dataTables_empty").text("Tidak ada data yang ditampilkan.")
+          }
         },
         error: function (xhr, status, error) {
-          alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
+          alert('Terdapat Kesalahan Pada Server...');
           $("#submit").prop("disabled", false);
         }
       });
@@ -238,8 +207,74 @@
       form.submit();
     }
 
+    function getData(){
+      var month = new Array();
+      month[0] = "January";
+      month[1] = "February";
+      month[2] = "March";
+      month[3] = "April";
+      month[4] = "May";
+      month[5] = "June";
+      month[6] = "July";
+      month[7] = "August";
+      month[8] = "September";
+      month[9] = "October";
+      month[10] = "November";
+      month[11] = "December";
+
+      var d = new Date();
+      var bulan = month[d.getMonth()];
+      var t = d.getYear();
+      var year = (t < 1000) ? t + 1900 : t;
+
+      $.ajax({
+        url: "<?php echo base_url() ?>index.php/Main/get_blok_data",
+        type: 'POST',
+        success: function (json) {
+          var response = JSON.parse(json);
+          var arr = [];
+          var jml = 0;
+
+          console.log(json);
+          response.forEach((data)=>{
+            if(data.IDCustomer != null) {
+              jml = jml + 1;
+              arr.push({IDCustomer:data.IDCustomer, Harga:data.Harga, IDBlok:data.IDBlok});
+            }
+
+          })
+
+          console.log(arr[1]);
+
+          $.ajax({
+            url: "<?php echo base_url() ?>index.php/Main/input_transaksi",
+            type: 'POST',
+            data : {jml:jml, arr:arr, bulan:bulan, tahun:year},
+            success: function (json) {
+              console.log(json);
+              console.log('json');
+              
+            },    
+            error: function (xhr, status, error) {
+              alert('Terdapat Kesalahan Pada Server...');
+              $("#submit").prop("disabled", false);
+            }
+          });
+
+        },    
+        error: function (xhr, status, error) {
+          alert('Terdapat Kesalahan Pada Server...');
+          $("#submit").prop("disabled", false);
+        }
+      });
+
+    }
+
+
     $(document).ready(function () {
-      dTable = $('#table').DataTable();
+      dTable = $('#table1').DataTable({
+        responsive: true
+      });
       get_transaksi();
     });
 

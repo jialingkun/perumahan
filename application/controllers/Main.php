@@ -13,7 +13,11 @@ class Main extends CI_Controller {
 		$this->load->model('ClusterModel');
 		$this->load->model('BlokModel');
 		$this->load->model('StaffModel');
+		$this->load->model('NotaModel');
+		$this->load->model('NotaDetailModel');
 		$this->load->helper('url_helper');
+		$this->load->library('pdf');
+        $this->load->library('form_validation');
 		date_default_timezone_set('Asia/Jakarta');
 	}
 
@@ -23,14 +27,15 @@ class Main extends CI_Controller {
 	public function index()
 	{
 		$this->load->view('login');
-	}
-	
+
+	}	
 
 	//Dashboard admin
 	public function dashboardadmin(){
 		if ($this->checkcookieuser()) {
 			$this->load->view('header');
 			$this->load->view('admin/dashboard');
+			$this->load->view('footer');
 		}else{
 			header("Location: ".base_url()."index.php/login");
 			die();
@@ -42,6 +47,7 @@ class Main extends CI_Controller {
 		if ($this->checkcookiestaff()) {
 			$this->load->view('header1');
 			$this->load->view('staff/blok_page');
+			$this->load->view('footer');
 		}else{
 			header("Location: ".base_url()."index.php/login");
 			die();
@@ -53,7 +59,28 @@ class Main extends CI_Controller {
 		if ($this->checkcookieuser()) {
 			$this->load->view('header');
 			$this->load->view('admin/profile_page');
+			$this->load->view('footer');
+		}else if ($this->checkcookiestaff()) {
+			$this->load->view('header1');
+			$this->load->view('admin/profile_page');
+			$this->load->view('footer');
 		}else{
+			header("Location: ".base_url()."index.php/login");
+			die();
+		}
+	}
+
+	//change password
+	public function changepassword(){
+		if ($this->checkcookieuser()) {
+			$this->load->view('header');
+			$this->load->view('admin/change_password');
+			$this->load->view('footer');
+		}else if ($this->checkcookiestaff()) {
+			$this->load->view('header1');
+			$this->load->view('staff/change_password');
+			$this->load->view('footer');
+		}else {
 			header("Location: ".base_url()."index.php/login");
 			die();
 		}
@@ -64,6 +91,7 @@ class Main extends CI_Controller {
 		if ($this->checkcookieuser()) {
 			$this->load->view('header');
 			$this->load->view('admin/cluster_page');
+			$this->load->view('footer');
 		}else{
 			header("Location: ".base_url()."index.php/login");
 			die();
@@ -75,6 +103,7 @@ class Main extends CI_Controller {
 		if ($this->checkcookieuser()) {
 			$this->load->view('header');
 			$this->load->view('admin/blok_page');
+			$this->load->view('footer');
 		}else{
 			header("Location: ".base_url()."index.php/login");
 			die();
@@ -86,6 +115,7 @@ class Main extends CI_Controller {
 		if ($this->checkcookieuser()) {
 			$this->load->view('header');
 			$this->load->view('admin/blok_detail_page');
+			$this->load->view('footer');
 		}else{
 			header("Location: ".base_url()."index.php/login");
 			die();
@@ -96,8 +126,8 @@ class Main extends CI_Controller {
 	public function customer(){
 		if ($this->checkcookieuser()) {
 			$this->load->view('header');
-			$this->load->view('admin/customer_page');		
-
+			$this->load->view('admin/customer_page');	
+			$this->load->view('footer');
 		}else{
 			header("Location: ".base_url()."index.php/login");
 			die();
@@ -108,7 +138,8 @@ class Main extends CI_Controller {
 	public function staff(){
 		if ($this->checkcookieuser()) {
 			$this->load->view('header');
-			$this->load->view('admin/staff_page');		
+			$this->load->view('admin/staff_page');	
+			$this->load->view('footer');	
 		}else{
 			header("Location: ".base_url()."index.php/login");
 			die();
@@ -122,10 +153,12 @@ class Main extends CI_Controller {
 			$data['idBlok'] = $idBlok;
 			$this->load->view('header');
 			$this->load->view('admin/arsip_admin_page', $data);
+			$this->load->view('footer');
 		}else if ($this->checkcookiestaff()) {
 			$data['idBlok'] = $idBlok;
 			$this->load->view('header1');
 			$this->load->view('staff/arsip_staff_page', $data);
+			$this->load->view('footer');
 		}else {
 			header("Location: ".base_url()."index.php/login");
 			die();
@@ -137,6 +170,7 @@ class Main extends CI_Controller {
 		if ($this->checkcookieuser()) {
 			$this->load->view('header');
 			$this->load->view('admin/arsip_page');
+			$this->load->view('footer');
 		}else {
 			header("Location: ".base_url()."index.php/login");
 			die();
@@ -150,17 +184,49 @@ class Main extends CI_Controller {
 			$data['idBlok'] = $idBlok;
 			$this->load->view('header');
 			$this->load->view('admin/tagihan_page',$data);
+			$this->load->view('footer');
 		} else if ($this->checkcookiestaff()) {
 			$data['idBlok'] = $idBlok;
 			$this->load->view('header1');
 			$this->load->view('staff/detail_iuran_page',$data);
+			$this->load->view('footer');
 		}else{
 			header("Location: ".base_url()."index.php/login");
 			die();
 		}
 	}
 
-	
+	//Review iuran tagihan
+	public function iuranreview(){
+		$idTagihan = $this->input->post('data');
+		if ($this->checkcookiestaff()) {
+			$data['idTagihan'] = $idTagihan;
+			$this->load->view('header1');
+			$this->load->view('staff/review_iuran',$data);
+			$this->load->view('footer');
+		}else{
+			header("Location: ".base_url()."index.php/login");
+			die();
+		}
+	}
+
+
+	public function cekuser(){
+		if ($this->checkcookieuser()) {
+			$this->load->view('header');
+			$this->load->view('admin/dashboard');
+			$this->load->view('footer');
+		}else if ($this->checkcookiestaff()) {
+			$this->load->view('header1');
+			$this->load->view('staff/blok_page');
+			$this->load->view('footer');
+		}else {
+			header("Location: ".base_url()."index.php/login");
+			die();
+		}
+	}
+
+
 	//GET DATA
 
 	//ambil data user
@@ -202,6 +268,7 @@ class Main extends CI_Controller {
 				$data = [];
 			}
 			if ($return_var == true) {
+				$jml = $data.length;
 				return $data;
 			}else{
 				echo json_encode($data);
@@ -255,15 +322,21 @@ class Main extends CI_Controller {
 	//parameter 1: true bila ingin return array, kosongi bila ingin Json
 	public function get_all_cluster($return_var = NULL){
 		$perumahan = $this->input->post('perumahan');
-		$data = $this->ClusterModel->get_all(null, $perumahan);
-			if (empty($data)){
-				$data = [];
-			}
-			if ($return_var == true) {
-				return $data;
-			}else{
-				echo json_encode($data);
-			}
+		$username = $this->get_cookie_decrypt("staffCookie");
+
+		if($username != NULL){
+			$data = $this->ClusterModel->get_all(null, $perumahan, $username);
+		}else{
+			$data = $this->ClusterModel->get_all(null, $perumahan);
+		}
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
 	}
 
 	//ambil data user berdasarkan username
@@ -298,7 +371,7 @@ class Main extends CI_Controller {
 	
 	public function get_blok_by_cluster($return_var = NULL){
 		$id = $this->input->post('id');
-		$data = $this->BlokModel->get_by_cluster($id);
+		$data = $this->BlokModel->get_blok_by_cluster($id);
 		
 		if (empty($data)){
 			$data = [];
@@ -312,14 +385,35 @@ class Main extends CI_Controller {
 
 	//ambil data blok
 	//parameter 1: true bila ingin return array, kosongi bila ingin Json
-	public function get_all_blok($return_var = NULL){
+	public function get_all_blok($isAdmin, $return_var = NULL){
 		$perumahan = $this->input->post('perumahan');
 		$cluster = $this->input->post('cluster');
-		$data = $this->BlokModel->get_all(null, $perumahan, $cluster);
+		$username = $this->get_cookie_decrypt("staffCookie");
+
+		if(!$isAdmin){
+			$data = $this->BlokModel->get_all(null, $perumahan, $cluster,null,$username);
+		}else{
+			$data = $this->BlokModel->get_all(null, $perumahan, $cluster);
+		}
+		if (empty($data)){
+			$data = [];
+		}
+		if ($return_var == true) {
+			return $data;
+		}else{
+			echo json_encode($data);
+		}
+	}
+
+	//ambil data blok yang ada penghuni
+	//parameter 1: true bila ingin return array, kosongi bila ingin Json
+	public function get_blok_data($return_var = NULL){
+		$data = $this->BlokModel->data_get();
 			if (empty($data)){
 				$data = [];
 			}
 			if ($return_var == true) {
+				// $jml = $data.length;
 				return $data;
 			}else{
 				echo json_encode($data);
@@ -341,21 +435,6 @@ class Main extends CI_Controller {
 		}
 	}
 
-	//ambil data blok punya customer
-	//parameter 1: true bila ingin return array, kosongi bila ingin Json
-	public function get_blok_detail($return_var = NULL){
-		$perumahan = $this->input->post('perumahan');
-		$cluster = $this->input->post('cluster');
-		$data = $this->BlokModel->get_all(null, $perumahan, $cluster);
-			if (empty($data)){
-				$data = [];
-			}
-			if ($return_var == true) {
-				return $data;
-			}else{
-				echo json_encode($data);
-			}
-	}
 
 	//detailblok customer
 	public function get_blok_customer($id, $return_var = NULL){
@@ -463,8 +542,11 @@ class Main extends CI_Controller {
 
 	public function get_tagihan($return_var = NULL){
 		$id = $this->input->post('id');
-		$data = $this->TagihanModel->get_all($id,0);
-		
+		if(is_array($id)){
+			$data = $this->TagihanModel->get_by_id($id);
+		}else{
+			$data = $this->TagihanModel->get_all($id,0);
+		}
 		if (empty($data)){
 			$data = [];
 		}
@@ -538,9 +620,9 @@ class Main extends CI_Controller {
 	
 	public function insert_perumahan() {
 		if ($this->checkcookieuser()) {
+			$spasi = str_replace(" ", "_", $this->input->post('nama'));
 			$data = array(
-				'IDPerumahan' => $this->input->post('id'),
-				'nama_perumahan' => $this->input->post('nama'),
+				'nama_perumahan' => $spasi,
 				'kota' => $this->input->post('kota'),
 				'status' => '0'
 			);
@@ -553,13 +635,17 @@ class Main extends CI_Controller {
 
 	public function insert_cluster() {
 		if ($this->checkcookieuser()) {
-			$perumahan =  $this->input->post('perum');
+			$perumahan =  str_replace(" ", "_", $this->input->post('perum'));
+
 			$idperum = $this->PerumahanModel->get_perumahan($perumahan);
+			$cluster = str_replace(" ", "_", $this->input->post('nama'));
+
+			$test = '';
+			$test = $test.$idperum.'_'.$cluster;
 
 			$data = array(
-				'IDCluster' => $this->input->post('id'),
 				'IDPerumahan' => $idperum,
-				'nama_cluster' => $this->input->post('nama')
+				'nama_cluster' => $test
 			);
 			$insertStatus = $this->ClusterModel->insert($data);
 			echo $insertStatus;
@@ -570,16 +656,17 @@ class Main extends CI_Controller {
 
 	public function insert_blok() {
 		if ($this->checkcookieuser()) {
-			$id = $this->input->post('id');
-			$perumahan =  $this->input->post('perumahan');
+			$nama = $this->input->post('nama');
 			$cluster =  $this->input->post('cluster');
 			$harga =  $this->input->post('harga');
-
+			$type =  $this->input->post('type');
 			
 			$data = array(
-				'IDBlok' => $id,
+				'nama_blok' => $nama,
 				'IDCluster' => $cluster,
-				'Harga' => $harga
+				'Harga' => $harga,
+				'IDCustomer' => null,
+				'type' => $type
 			);
 			$insertStatus = $this->BlokModel->insert($data);
 			echo $insertStatus;
@@ -588,10 +675,27 @@ class Main extends CI_Controller {
 		}
 	}
 
+	public function insert_blok_detail() {
+		if ($this->checkcookieuser()) {
+			$id = $this->get_cookie_decrypt("editblok");
+			$perumahan =  $this->input->post('perumahan');
+			$cluster =  $this->input->post('cluster');
+			$blok =  $this->input->post('blok');
+			
+			$data = array(
+				'IDCustomer' => $id
+			);
+
+			$where= array('IDBlok' => $blok );
+        	$insertStatus = $this->BlokModel->update($where, $data);			
+		}else{
+			echo "access denied";
+		}
+	}
+
 	public function insert_customer() {
 		if ($this->checkcookieuser()) {
 			$data = array(
-				'IDCustomer' => $this->input->post('id'),
 				'nama' => $this->input->post('nama'),
 				'nomor' => $this->input->post('nomor'),
 				'email' => $this->input->post('email')
@@ -605,31 +709,31 @@ class Main extends CI_Controller {
 
 	public function insert_staff() {
 		if ($this->checkcookieuser()) {
-			$username =  $this->input->post('id');
-			$pass =  md5($this->input->post('password'));
-			$nama =  $this->input->post('nama');
+			$username =  $this->input->post('user');
 			$nomor =  $this->input->post('nomor');
 			$perumahan = $this->input->post('perum');
+			$email = $this->input->post('email');
 			$staff = "staff";
-			// $idperum = $this->PerumahanModel->get_perumahan($perumahan);
+			$nama = str_replace(" ", "_", $this->input->post('nama'));
 
 			$data = array(
 				'username' => $username,
-				'password' => $pass,
-				'nama' => $nama,
+				'password' => '827ccb0eea8a706c4c34a16891f84e7b',
+				'nama_user' => $nama,
 				'pangkat' => $staff,
-				'nomor' => $nomor
+				'nomor' => $nomor,
+				'email' => $email
 			);
 
-			// $data1 = array(
-			// 	'username' => $username,
-			// 	'status' => '1'
-			// );
+			$data1 = array(
+				'username' => $username,
+				'status' => '1'
+			);
 
-			// $where= array('IDPerumahan' => $idperum );
-			// $updateperumahan = $this->PerumahanModel->update($where, $data1);
+			$where= array('IDPerumahan' => $perumahan );
 			$insertStatus = $this->StaffModel->insert($data);
-			echo $insertStatus;
+			$updateperumahan = $this->PerumahanModel->update($where, $data1);
+			echo $nama;
 		}else{
 			echo "access denied";
 		}
@@ -642,28 +746,29 @@ class Main extends CI_Controller {
 	//parameter 1: username
 	//input: form POST seperti di bawah
 	//output: success/failed/id not found/wrong old password/access denied
-	public function update_password_user($id){
+	public function update_password_user(){
 		if ($this->checkcookieuser()) {
-			$oldpassword = md5($this->input->post('oldpassword'));
-			$newpassword = md5($this->input->post('newpassword'));
-			$filter = array('username'=> $id);
-			$data = $this->Default_model->get_data_user($filter);
-			if (empty($data)){
-				echo "id not found";
-			}else{
-				foreach ($data as $row){
-					if ($oldpassword == $row['password']){
-						$update_data = array(
-							'password' => $newpassword
-						);
-						$updateStatus = $this->Default_model->update_user($id,$update_data);
-						echo $updateStatus;
-					}else{
-						echo "wrong old password";
-					}
-				}
-			}
-		}else{
+			$password = md5($this->input->post('passw'));			
+			$username = $this->get_cookie_decrypt("adminCookie");
+
+			$data = array(
+				'password' => $password
+			);
+			
+			$where= array('username' => $username );
+			$this->StaffModel->update($where, $data);
+
+		}else if($this->checkcookiestaff()){
+			$password = md5($this->input->post('passw'));			
+			$username = $this->get_cookie_decrypt("staffCookie");
+
+			$data = array(
+				'password' => $password
+			);
+			
+			$where= array('username' => $username );
+			$this->StaffModel->update($where, $data);			
+		} else {
 			echo "access denied";
 		}
 	}
@@ -673,9 +778,10 @@ class Main extends CI_Controller {
 		$id = $this->input->post('id');
 		$nama = $this->input->post('nama');
 		$kota = $this->input->post('kota');
+		$spasi = str_replace(" ", "_", $nama);
 
 		$data = array(
-            'nama_perumahan' => $nama,
+            'nama_perumahan' => $spasi,
             'kota' => $kota,
 		);
 		
@@ -687,13 +793,16 @@ class Main extends CI_Controller {
 	//Edit data cluster
 	public function update_cluster(){
 		$id = $this->input->post('id');
-		$perumahan = $this->input->post('perumahan');
-		$nama = $this->input->post('nama');
+		$perumahan = str_replace(" ", "_", $this->input->post('perumahan'));
+		$nama = str_replace(" ", "_", $this->input->post('nama'));
 
 		$idperum = $this->PerumahanModel->get_perumahan($perumahan);
 
+		$test = '';
+		$test = $test.$idperum.'_'.$nama;
+
 		$data = array(
-			'nama_cluster' => $nama,
+			'nama_cluster' => $test,
 			'IDPerumahan' => $idperum
 		);
 		
@@ -704,23 +813,17 @@ class Main extends CI_Controller {
 	//Edit data blok
 	public function update_blok(){
 		$id = $this->input->post('id');
+		$nama = $this->input->post('nama');
 		$perumahan = $this->input->post('perumahan');
 		$cluster = $this->input->post('cluster');
-		$customer = $this->input->post('customer');
 		$harga = $this->input->post('harga');		
 
-		if ($customer==null){
-			$data = array(
-				'IDCluster' => $cluster,
-				'Harga' => $harga
-			);
-		} else {
-			$data = array(
-				'IDCustomer' => $customer,
-				'IDCluster' => $cluster,
-				'Harga' => $harga
-			);
-		}
+		$data = array(
+			'nama_blok' => $nama,
+			'IDCluster' => $cluster,
+			'Harga' => $harga
+		);
+		
 		
 		$where= array('IDBlok' => $id );
         $this->BlokModel->update($where, $data);
@@ -771,7 +874,7 @@ class Main extends CI_Controller {
 
 		$data = array(
 			'username' => $username,
-			'nama' => $nama,
+			'nama_user' => $nama,
 			'nomor' => $nomor,
 			'email' => $email
 		);
@@ -798,18 +901,37 @@ class Main extends CI_Controller {
 		}
 		$where= array('username' => $username );
 		$this->StaffModel->update($where, $data);
-		
-		
-		
-
-		
+				
 	}
 	
+	public function do_bayar(){
+		if($this->checkcookiestaff()){
+			$username = $this->get_cookie_decrypt("staffCookie");
+			$id = $this->input->post("id");
+			$diskon = $this->input->post("diskon");
+			$total_awal = $this->input->post("total_awal");
+			$this->TagihanModel->update_status($id);
+			$notaID = $this->NotaModel->insert_one($username,$total_awal,$diskon);
+			$this->NotaDetailModel->insert_one($notaID, $id);		
+			$c = $this->create_cookie_encrypt("idcetak",$notaID);	
+	
+			echo $notaID;
+		}
+
+	}
+
+	public function view_pdf(){
+		$id = $this->input->post("data");
+		$c = $this->create_cookie_encrypt("idcetak",$id);	
+		echo $c;
+	}
+
 	public function update_profile(){
-		$nama = $this->input->post('nama');
 		$nomor = $this->input->post('nomor');
 		$email = $this->input->post('email');
 		$password = $this->input->post('password');
+		$nama = str_replace(" ", "_", $this->input->post('nama'));
+
 
 		$id = $this->get_cookie_decrypt("adminCookie");
 		if($id == NULL){
@@ -818,13 +940,13 @@ class Main extends CI_Controller {
 		
 		if($password == NULL){
 			$data = array(
-				'nama' => $nama,
+				'nama_user' => $nama,
 				'nomor' => $nomor,
 				'email' => $email
 			);
 		} else{
 			$data = array(
-				'nama' => $nama,
+				'nama_user' => $nama,
 				'nomor' => $nomor,
 				'email' => $email,
 				'password'=> $password
@@ -834,6 +956,20 @@ class Main extends CI_Controller {
 
 		echo "Data saved !";
 	}
+
+	//Reset password staff
+	public function reset_pass_staff(){
+		$id = $this->input->post('id');
+
+		$data = array(
+            'password' => '827ccb0eea8a706c4c34a16891f84e7b'
+		);
+		
+		$where= array('username' => $id );
+		$this->StaffModel->update($where, $data);
+		
+	}
+
 
 
 	//DELETE
@@ -905,7 +1041,17 @@ class Main extends CI_Controller {
 	public function delete_staff(){
 		if ($this->checkcookieuser()) {
 			$username = $this->input->post('id');
+
+			$data = array(
+				'username' => null,
+				'status' => '0'
+			);
+
+			$where= array('username' => $username );
+			$this->PerumahanModel->update($where, $data);
 			$deleteStatus = $this->StaffModel->delete($username);
+
+
 			echo $deleteStatus;
 		}else{
 			echo "access denied";
@@ -919,6 +1065,7 @@ class Main extends CI_Controller {
 	//input: form POST seperti di bawah
 	//Output: berhasil login / gagal login
 	public function cekloginuser(){
+
 		$username = $this->input->post('username');
 		$password = md5($this->input->post('password'));
 		$data = $this->Default_model->get_data_user();
@@ -941,10 +1088,10 @@ class Main extends CI_Controller {
 				
 			}
 		}
-		if ($is_login && $status == 'admin') {
-			echo "Selamat Datang Admin";
-		} else if ($is_login && $status == 'staff') {
-			echo "Login Berhasil";
+		if ($status == 'admin') {
+			echo "admin";
+		} else if ($status == 'staff') {
+			echo "staff";
 		} else{
 			echo "gagal login";
 		}
@@ -1060,10 +1207,404 @@ class Main extends CI_Controller {
 		if ($this->input->cookie($name,true)!=NULL) {
 			return str_rot13($this->input->cookie($name,true));
 		}else{
-			echo "no cookie";
+			return null;
 		}
 	}
 
+	//verifikasi empty login
+	public function aksilogin(){
+		$this->form_validation->set_rules('username', 'Username', 'required');
+        $this->form_validation->set_rules('password', 'Password', 'required');
 
+
+        if ($this->form_validation->run() == FALSE){
+            $errors = validation_errors();
+            echo json_encode(['error'=>$errors]);
+        }else{
+           echo json_encode(['success'=>'Record added successfully.']);
+        }
+	}
+
+	//verifikasi change password empty
+	public function aksipass(){
+		$this->form_validation->set_rules('password', 'Password', 'required|matches[re_password]');
+        $this->form_validation->set_rules('re_password', 'Retype Password', 'required');
+
+
+        if ($this->form_validation->run() == FALSE){
+            $errors = validation_errors();
+            echo json_encode(['error'=>$errors]);
+        }else{
+           echo json_encode(['success'=>'Record added successfully.']);
+        }
+	}
+
+	//fungsi tambah tagihan bulanan
+	public function input_transaksi(){
+		$jml =  $this->input->post('jml');
+		$cust = $this->input->post('arr');
+		$bulan = $this->input->post('bulan');
+		$tahun = $this->input->post('tahun');
+		$idsementara = '';
+		$nilaiharga = '';
+		$harga1 = '';
+		$nilaiblok = '';
+		$blok1 = '';
+		foreach($cust as $hasil) {
+
+			$nilaiharga = json_encode($hasil['Harga']);
+			$nilaiblok = json_encode($hasil['IDBlok']);
+			$number = str_replace('"', "", $nilaiharga);
+			$harga1 = intval($number);
+			$blok1 = str_replace('"', "", $nilaiblok);
+			$idsementara = $idsementara.$blok1.$bulan.$tahun;
+
+
+			$data = array(
+				'IDTagihan' => $idsementara,
+				'IDBlok' => $blok1,
+				'bulan' => $bulan,
+				'tahun' => $tahun,
+				'Harga' => $harga1,
+				'status' => '0'
+			);
+
+			$insertStatus = $this->TagihanModel->insert_tagihan($data);
+			$idsementara = '';
+			$nilaiharga = '';
+			$harga1 = '';
+			$nilaiblok = '';
+			$blok1 = '';
+		}
+
+	}
+
+
+	//utk penulisan fungsi terbilang pada kuintansi
+	public function penyebut($nilai) {
+		$nilai = abs($nilai);
+		$huruf = array("", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas");
+		$temp = "";
+		if ($nilai < 12) {
+			$temp = " ". $huruf[$nilai];
+		} else if ($nilai <20) {
+			$temp = $this->penyebut($nilai - 10). " belas";
+		} else if ($nilai < 100) {
+			$temp = $this->penyebut($nilai/10)." Puluh". $this->penyebut($nilai % 10);
+		} else if ($nilai < 200) {
+			$temp = " Seratus" . $this->penyebut($nilai - 100);
+		} else if ($nilai < 1000) {
+			$temp = $this->penyebut($nilai/100) . " ratus" . $this->penyebut($nilai % 100);
+		} else if ($nilai < 2000) {
+			$temp = " Seribu" . $this->penyebut($nilai - 1000);
+		} else if ($nilai < 1000000) {
+			$temp = $this->penyebut($nilai/1000) . " ribu" . $this->penyebut($nilai % 1000);
+		} else if ($nilai < 1000000000) {
+			$temp = $this->penyebut($nilai/1000000) . " juta" . $this->penyebut($nilai % 1000000);
+		} else if ($nilai < 1000000000000) {
+			$temp = $this->penyebut($nilai/1000000000) . " milyar" . $this->penyebut(fmod($nilai,1000000000));
+		} else if ($nilai < 1000000000000000) {
+			$temp = $this->penyebut($nilai/1000000000000) . " trilyun" . $this->penyebut(fmod($nilai,1000000000000));
+		}     
+		return $temp;
+	}
+
+	public function terbilang($nilai) {
+		if($nilai<0) {
+			$hasil = "minus ". trim($this->penyebut($nilai));
+		} else {
+			$hasil = trim($this->penyebut($nilai));
+		}     		
+		return $hasil;
+	}
+
+	//mencetak kuintansi pdf tagihan pembayaran
+	public function cetak_pdf(){
+		$no = 1;
+		$username = $this->get_cookie_decrypt("idcetak");
+		$data = $this->TagihanModel->kuintansi($username);
+		$bulannya = $this->TagihanModel->jmlbln($username);
+		$dt = new DateTime(null, new DateTimeZone('Asia/Jakarta')); 
+		$c_pdf = $this->pdf->getInstance();
+		$jml = 0;
+		$caca = "";
+		$nilai = "";
+
+		foreach($bulannya as $item) {
+			$caca = $caca.$bulannya[$jml]->bulan. ", ";
+			$nilai = $nilai.$bulannya[$jml]->Harga. ", ";
+			$jml = $jml + 1;
+		}
+
+		$yng = $this->terbilang($data[0]->total_awal);
+
+        $c_pdf = new FPDF('P', 'mm', 'A4');
+        $c_pdf->AddPage();
+        $c_pdf->header('Arial');
+        $c_pdf->setTopMargin(15);
+        $c_pdf->setLeftMargin(12);
+        $c_pdf->Cell(10);
+        $c_pdf->SetFont('Arial','', 15);
+        $c_pdf->Cell(75,10,'MANAGEMENT STATE', 0,1, 'C');
+        $c_pdf->SetFont('Arial', 'B', 17);
+        $c_pdf->Cell(10);
+		$c_pdf->Cell(190,7, 'PURI SAFIRA RESIDENCE', 0,1,'L');
+        $c_pdf->SetFont('Arial', 'B', 8);
+        $c_pdf->Cell(10);
+		$c_pdf->Cell(75,5, 'Jl. Raya Darmo No.75-77, Surabaya',0,0, 'C');
+		$c_pdf->SetFont('Arial', 'U',25);
+		$c_pdf->Cell(30);
+		$c_pdf->Cell(120,5, 'Tanda Terima',0,1, 'L');
+		$c_pdf->SetFont('Arial', 'B',7);
+		$c_pdf->Cell(10);
+		$c_pdf->Cell(75,4, 'Telp. (031) 5666615, 5666616',0,1, 'C');
+	   		
+		$c_pdf->Line(15, 40, 220-25, 40);
+        $c_pdf->Line(15, 40, 220-25, 40);
+        $c_pdf->Line(15, 40, 220-25, 40);
+
+        $c_pdf->Cell(10,8, '', 0,1);
+        $c_pdf->Cell(10);
+        $c_pdf->SetFont('Arial', '', 12);
+        $c_pdf->Cell(40,8,'Sudah Terima dari :' ,0,0, 'L');
+		$c_pdf->Cell(55,8, $data[0]->nama ,0,0, 'L');
+
+		$c_pdf->Cell(14,8,'Type: ',0,0,'L');
+		$c_pdf->Cell(20,8, $data[0]->type ,0,0,'L');
+		$c_pdf->Cell(14,8,'Blok:',0,0,'L');
+		$c_pdf->Cell(20,8, $data[0]->IDBlok,0,1,'L'); 
+
+		$c_pdf->Cell(10);
+        $c_pdf->Cell(40,8, 'Terbilang                :',0,0, 'L');
+        $c_pdf->Cell(40,8, $yng,0,1, 'L');
+        
+		$c_pdf->Cell(10);
+        $c_pdf->Cell(40,8, 'Untuk Pembayaran:',0,0, 'L');
+        $c_pdf->Cell(40,8, 'IURAN MANAGEMENT ESTATE',0,1, 'L');
+
+		$c_pdf->Cell(50);
+		$c_pdf->Cell(16,8, 'Bulan :',0,0, 'L');
+		$c_pdf->Cell(40,8, $caca ,0,1, 'L');
+
+		$c_pdf->Cell(50);
+        $c_pdf->Cell(10,8, $jml ,0,0, 'L');
+		$c_pdf->Cell(28,8, 'bulan   x  Rp.',0,0, 'L');
+		$c_pdf->Cell(40,8, $bulannya[0]->Harga ,0,1, 'L');
+
+		$c_pdf->Cell(10);
+        $c_pdf->Cell(48,8, 'Jumlah Rupiah       : Rp.',0,0, 'L');
+		$c_pdf->Cell(40,8, $data[0]->total_awal ,0,1, 'L');
+		    
+		$c_pdf->Cell(10,10, '', 0,1);
+        $c_pdf->Cell(10);
+        $c_pdf->SetFont('Arial', '', '12');
+		$c_pdf->Cell(115,7, 'Yang Menyerahkan,',0,0, 'L');
+		$c_pdf->Cell(80,7, 'Surabaya, '.$dt->format('Y-m-d'),0,1, 'L');
+		
+        $c_pdf->SetFont('Arial','','10');
+		$c_pdf->Cell(10);       
+        $c_pdf->Cell(140,5, 'Penerima,',0,0, 'R');
+        $c_pdf->Cell(10,10,'',0,1);
+        $c_pdf->Cell(10);
+    
+        $c_pdf->Cell(10,15,'',0,1);
+        $c_pdf->Cell(10);
+        $c_pdf->SetFont('Arial','','12');
+		$c_pdf->Cell(115,5, '('.$data[0]->nama_user.')',0,0); 
+		$c_pdf->Cell(100,5, '('.$data[0]->nama.')',0,0);
+		   
+		$caca = "";
+		$nilai = "";
+		
+		$c_pdf->Output();
+		
+    }
+
+
+	//mencetak kuintansi pdf tagihan pembayaran dengan diskon
+	public function cetak_pdf_diskon(){
+		$no = 1;
+		$username = $this->get_cookie_decrypt("idcetak");
+		$data = $this->TagihanModel->kuintansi($username);
+		$bulannya = $this->TagihanModel->jmlbln($username);
+		$dt = new DateTime(null, new DateTimeZone('Asia/Jakarta')); 
+		$c_pdf = $this->pdf->getInstance();
+		$jml = 0;
+		$caca = "";
+		$nilai = "";
+
+		foreach($bulannya as $item) {
+			$caca = $caca.$bulannya[$jml]->bulan. ", ";
+			$nilai = $nilai.$bulannya[$jml]->Harga. ", ";
+			$jml = $jml + 1;
+		}
+
+		$yng = $this->terbilang($data[0]->total_setelah_diskon);
+
+        $c_pdf = new FPDF('P', 'mm', 'A4');
+        $c_pdf->AddPage();
+        $c_pdf->header('Arial');
+        $c_pdf->setTopMargin(15);
+        $c_pdf->setLeftMargin(12);
+        $c_pdf->Cell(10);
+        $c_pdf->SetFont('Arial','', 15);
+        $c_pdf->Cell(75,10,'MANAGEMENT STATE', 0,1, 'C');
+        $c_pdf->SetFont('Arial', 'B', 17);
+        $c_pdf->Cell(10);
+		$c_pdf->Cell(190,7, 'PURI SAFIRA RESIDENCE', 0,1,'L');
+        $c_pdf->SetFont('Arial', 'B', 8);
+        $c_pdf->Cell(10);
+		$c_pdf->Cell(75,5, 'Jl. Raya Darmo No.75-77, Surabaya',0,0, 'C');
+		$c_pdf->SetFont('Arial', 'U',25);
+		$c_pdf->Cell(30);
+		$c_pdf->Cell(120,5, 'Tanda Terima',0,1, 'L');
+		$c_pdf->SetFont('Arial', 'B',7);
+		$c_pdf->Cell(10);
+		$c_pdf->Cell(75,4, 'Telp. (031) 5666615, 5666616',0,1, 'C');
+	   		
+		$c_pdf->Line(15, 40, 220-25, 40);
+        $c_pdf->Line(15, 40, 220-25, 40);
+        $c_pdf->Line(15, 40, 220-25, 40);
+
+        $c_pdf->Cell(10,8, '', 0,1);
+        $c_pdf->Cell(10);
+        $c_pdf->SetFont('Arial', '', 12);
+        $c_pdf->Cell(40,8,'Sudah Terima dari :' ,0,0, 'L');
+		$c_pdf->Cell(55,8, $data[0]->nama ,0,0, 'L');
+
+		$c_pdf->Cell(14,8,'Type: ',0,0,'L');
+		$c_pdf->Cell(20,8, $data[0]->type ,0,0,'L');
+		$c_pdf->Cell(14,8,'Blok:',0,0,'L');
+		$c_pdf->Cell(20,8, $data[0]->IDBlok,0,1,'L'); 
+
+		$c_pdf->Cell(10);
+        $c_pdf->Cell(40,8, 'Terbilang                :',0,0, 'L');
+        $c_pdf->Cell(40,8, $yng,0,1, 'L');
+        
+		$c_pdf->Cell(10);
+        $c_pdf->Cell(40,8, 'Untuk Pembayaran:',0,0, 'L');
+        $c_pdf->Cell(40,8, 'IURAN MANAGEMENT ESTATE',0,1, 'L');
+
+		$c_pdf->Cell(50);
+		$c_pdf->Cell(16,8, 'Bulan :',0,0, 'L');
+		$c_pdf->Cell(40,8, $caca ,0,1, 'L');
+
+		$c_pdf->Cell(50);
+        $c_pdf->Cell(10,8, $jml ,0,0, 'L');
+		$c_pdf->Cell(28,8, 'bulan   x  Rp.',0,0, 'L');
+		$c_pdf->Cell(40,8, $bulannya[0]->Harga ,0,1, 'L');
+
+		$c_pdf->Cell(10);
+        $c_pdf->Cell(48,8, 'Total diskon            : Rp.',0,0, 'L');
+		$c_pdf->Cell(40,8, $data[0]->diskon ,0,1, 'L');
+
+		$c_pdf->Cell(10);
+        $c_pdf->Cell(48,8, 'Jumlah Rupiah       : Rp.',0,0, 'L');
+		$c_pdf->Cell(40,8, $data[0]->total_setelah_diskon ,0,1, 'L');	
+        
+		$c_pdf->Cell(10,10, '', 0,1);
+        $c_pdf->Cell(10);
+        $c_pdf->SetFont('Arial', '', '12');
+		$c_pdf->Cell(115,7, 'Yang Menyerahkan,',0,0, 'L');
+		$c_pdf->Cell(80,7, 'Surabaya, '.$dt->format('Y-m-d'),0,1, 'L');
+		
+        $c_pdf->SetFont('Arial','','10');
+		$c_pdf->Cell(10);       
+        $c_pdf->Cell(140,5, 'Penerima,',0,0, 'R');
+        $c_pdf->Cell(10,10,'',0,1);
+        $c_pdf->Cell(10);
+    
+        $c_pdf->Cell(10,15,'',0,1);
+        $c_pdf->Cell(10);
+        $c_pdf->SetFont('Arial','','12');
+		$c_pdf->Cell(115,5, '('.$data[0]->nama_user.')',0,0); 
+		$c_pdf->Cell(100,5, '('.$data[0]->nama.')',0,0);
+		   
+		$caca = "";
+		$nilai = "";
+
+
+		////////////////////////////////////
+		// $c_pdf->Line(0, 150, 220-25, 150);
+        // $c_pdf->Line(0, 150, 220-25, 150);
+        // $c_pdf->Line(0, 150, 220-25, 150);
+		
+
+        // $c_pdf->SetFont('Arial','', 15);
+        // $c_pdf->Cell(75,20,'MANAGEMENT STATE', 0,1, 'C');
+        // $c_pdf->SetFont('Arial', 'B', 17);
+        // $c_pdf->Cell(10);
+		// $c_pdf->Cell(190,7, 'PURI SAFIRA RESIDENCE', 0,1,'L');
+        // $c_pdf->SetFont('Arial', 'B', 8);
+        // $c_pdf->Cell(10);
+		// $c_pdf->Cell(75,5, 'Jl. Raya Darmo No.75-77, Surabaya',0,0, 'C');
+		// $c_pdf->SetFont('Arial', 'U',25);
+		// $c_pdf->Cell(30);
+		// $c_pdf->Cell(120,5, 'Tanda Terima',0,1, 'L');
+		// $c_pdf->SetFont('Arial', 'B',7);
+		// $c_pdf->Cell(10);
+		// $c_pdf->Cell(75,4, 'Telp. (031) 5666615, 5666616',0,1, 'C');
+
+		// $c_pdf->Line(15, 173, 220-25, 173);
+        // $c_pdf->Line(15, 173, 220-25, 173);
+        // $c_pdf->Line(15, 173, 220-25, 173);
+
+        // $c_pdf->Cell(10,8, '', 0,1);
+        // $c_pdf->Cell(10);
+        // $c_pdf->SetFont('Arial', '', 12);
+        // $c_pdf->Cell(40,8,'Sudah Terima dari :' ,0,0, 'L');
+		// // foreach ($data as $item){
+		// 	$c_pdf->Cell(55,8, $data[0]->nama ,0,0, 'L');
+		// // }
+		
+
+		// $c_pdf->Cell(14,8,'Type: ',0,0,'L');
+		// $c_pdf->Cell(20,8, $data[0]->type ,0,0,'L');
+		// $c_pdf->Cell(14,8,'Blok:',0,0,'L');
+		// $c_pdf->Cell(20,8, $data[0]->IDBlok,0,1,'L'); 
+
+		// $c_pdf->Cell(10);
+        // $c_pdf->Cell(40,8, 'Terbilang                :',0,0, 'L');
+        // $c_pdf->Cell(40,8, 'lalala',0,1, 'L');
+        
+		// $c_pdf->Cell(10);
+        // $c_pdf->Cell(40,8, 'Untuk Pembayaran:',0,0, 'L');
+        // $c_pdf->Cell(40,8, 'IURAN MANAGEMENT ESTATE',0,1, 'L');
+
+		// $c_pdf->Cell(50);
+        // $c_pdf->Cell(16,8, 'Bulan :',0,0, 'L');
+        // $c_pdf->Cell(40,8, 'lalala',0,1, 'L');
+
+		// $c_pdf->Cell(50);
+        // $c_pdf->Cell(16,8, $jml ,0,0, 'L');
+        // $c_pdf->Cell(28,8, 'bulan   x  Rp.',0,0, 'L');
+		// $c_pdf->Cell(40,8, $data[0]->total_setelah_diskon ,0,1, 'L');
+
+		// $c_pdf->Cell(10);
+        // $c_pdf->Cell(48,8, 'Jumlah Rupiah       : Rp.',0,0, 'L');
+		// $c_pdf->Cell(40,8, '899999',0,1, 'L');
+		
+        
+		// $c_pdf->Cell(10,10, '', 0,1);
+        // $c_pdf->Cell(10);
+        // $c_pdf->SetFont('Arial', '', '12');
+		// $c_pdf->Cell(115,7, 'Yang Menyerahkan,',0,0, 'L');
+		// $c_pdf->Cell(80,7, 'Surabaya, '.$dt->format('Y-m-d'),0,1, 'L');
+		
+        // $c_pdf->SetFont('Arial','','10');
+		// $c_pdf->Cell(10);       
+        // $c_pdf->Cell(140,5, 'Penerima,',0,0, 'R');
+        // $c_pdf->Cell(10,10,'',0,1);
+        // $c_pdf->Cell(10);
+    
+        // $c_pdf->Cell(10,15,'',0,1);
+        // $c_pdf->Cell(10);
+        // $c_pdf->SetFont('Arial','','12');
+		// $c_pdf->Cell(115,5, '('.$data[0]->nama_user.')',0,0); 
+		// $c_pdf->Cell(100,5, '('.$data[0]->nama.')',0,0);
+          
+		$c_pdf->Output();
+		
+    }
 	
 }

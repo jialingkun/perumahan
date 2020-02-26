@@ -1,4 +1,4 @@
-        <script src="<?php echo base_url('dist/vendor/jquery/jquery.min.js');?>"></script>
+<script src="<?php echo base_url('dist/vendor/jquery/jquery.min.js');?>"></script>
         
         <!-- Begin Page Content -->
         <div class="container-fluid">
@@ -13,24 +13,13 @@
           <div class="card-body" style="background-color: #FFFFFF;">
 
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
-              <button class="btn btn-primary" data-toggle="modal" data-target="#addmodal">Add Customer</button>
-              <form class="d-none d-sm-inline-block form-inline ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                <div class="input-group">
-                  <input type="text" id="searchbox" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                  <div class="input-group-append">
-                      <button class="btn btn-primary" type="button">
-                      <i class="fas fa-search fa-sm"></i>
-                      </button>
-                  </div>
-                </div>
-              </form>
+              <button class="btn btn-primary" data-toggle="modal" data-target="#addmodal">Add Customer</button>             
             </div>
 
             <!--table-->
-            <table id="table" class="display">
+            <table id="table1" class="table table-striped table-bordered nowrap" style="width:100%">
               <thead>
                 <tr>
-                  <th>ID</th>
                   <th>Nama</th>
                   <th>Email</th>
                   <th>Nomor</th>
@@ -57,31 +46,31 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
-                <form>
+              <form onsubmit="updatedata(event)">
+                <div class="modal-body">
                   <div class="form-group">
-                    <label for="id-customer1" class="col-form-label">Id Customer:</label>
-                    <input type="text" class="form-control" id="id-customer1" readonly>
+                    <label for="id_customer1" class="col-form-label">Id Customer:</label>
+                    <input type="text" class="form-control" id="id_customer1" readonly>
                   </div>                 
                   <div class="form-group">
                     <label for="nama1" class="col-form-label">Nama:</label>
-                    <input type="text" class="form-control" id="nama1">
+                    <input type="text" class="form-control" id="nama1" required>
                   </div>
                   <div class="form-group">
                     <label for="email1" class="col-form-label">Email:</label>
-                    <input type="text" class="form-control" id="email1">
+                    <input type="email" class="form-control" id="email1" required>
                   </div>
                   <div class="form-group">
                     <label for="nomor1" class="col-form-label">Nomor:</label>
-                    <input type="text" class="form-control" id="nomor1">
+                    <input type="text" class="form-control" id="nomor1" required onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))">
                   </div>
                  
-                </form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="updatedata">Update</button>
-              </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+              </form>
             </div>
           </div>
         </div> 
@@ -96,81 +85,36 @@
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <div class="modal-body">
-                <form>
-                  <div class="form-group">
-                    <label for="id-customer" class="col-form-label">Id Customer:</label>
-                    <input type="text" class="form-control" id="id-customer" placeholder="ID Anda...">
+              <form id="form" onsubmit="insertdata()">
+                <div class="modal-body">
+                  <div class="form-group" > <label class="alert alert-danger print-error-msg" style="display:none">uoiuou</label>
+                  <div class="alert alert-danger print-error-msg" style="display:none"></div>    
                   </div>                 
-                  <div class="form-group">
-                    <label for="nama" class="col-form-label">Nama:</label>
-                    <input type="text" class="form-control" id="nama" placeholder="Nama Anda...">
-                  </div>
-                  <div class="form-group">
-                    <label for="email" class="col-form-label">Email:</label>
-                    <input type="text" class="form-control" id="email" placeholder="Email Anda...">
-                  </div>
-                  <div class="form-group">
-                    <label for="nomor" class="col-form-label">Nomor:</label>
-                    <input type="text" class="form-control" id="nomor" placeholder="Nomor Anda...">
-                  </div>
-                 
-                </form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="insertdata()">Add</button>
-              </div>
+                    <div class="form-group">
+                      <label for="nama" class="col-form-label">Nama</label>
+                      <input type="text" class="form-control" id="nama" placeholder="Nama Anda..." required>
+                    </div>
+                    <div class="form-group">
+                      <label for="email" class="col-form-label">Email</label>
+                      <input type="email" class="form-control" id="email" placeholder="Email Anda..." value="<?php echo set_value('email'); ?>" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="nomor" class="col-form-label">Nomor</label>
+                      <input type="text" onkeypress="return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" class="form-control" id="nomor" placeholder="Nomor Anda..." required>
+                    </div>
+                  
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  <button type="submit" class="btn btn-primary" >Add</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>  
-
-
-
-
       </div>
       <!-- End of Main Content -->
-     
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2019</span>
-          </div>
-        </div>
-      </footer>
-      <!-- End of Footer -->
-
-    </div>
-    <!-- End of Content Wrapper -->
-
-  </div>
-  <!-- End of Page Wrapper -->
-
-  <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
-
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="<?=base_url("index.php/Main/logoutuser");?>">Logout</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
+   
   <!-- Bootstrap core JavaScript-->
   <script src="<?php echo base_url('dist/vendor/bootstrap/js/bootstrap.bundle.min.js');?>"></script>
 
@@ -180,32 +124,45 @@
   <!-- Custom scripts for all pages-->
   <script src="<?php echo base_url('dist/js/sb-admin-2.min.js');?>"></script>
 
+  <!-- responsive -->
+  <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+  <script src="https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+  <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
+  
 	<script src="<?php echo base_url('dist/vendor/datatables/jquery.dataTables.js');?>"></script>
 	<script src="<?php echo base_url('dist/js/table.js');?>"></script>
 
 
   <script>
         $(document).ready(function () { 
-          dTable = $('#table').DataTable();
+          dTable = $('#table1').DataTable({
+            responsive: true
+          });
+         
+          $(".dataTables_empty").text("Loading...")
           $.ajax({
             url: "<?php echo base_url() ?>index.php/Main/get_all_customer",
             type: 'POST',
             success: function (json) {
               var response = JSON.parse(json);
               var no = 0;
-              response.forEach((data)=>{
-                no++;
-                dTable.row.add([
-                  no,
-                  data.nama,
-                  data.email,
-                  data.nomor,
-                  '<button class="btn btn-outline-primary mt-10 mb-10"><a onclick=detaildata("'+ data.IDCustomer +'")>Detail</button></a>'
-									+ '<button class="btn btn-outline-success mt-10 mb-10"><a onclick=tampildata("'+ data.IDCustomer +'")>Edit</a></button>'
-									+ '<button class="btn btn-danger mt-10 mb-10"><a onclick=hapusdata("'+ data.IDCustomer +'") >Delete</a></button>'
-                
-                ]).draw(false);                
-              })
+              if(response.length > 0){
+                response.forEach((data)=>{
+                  no++;
+                  dTable.row.add([
+                    data.nama,
+                    data.email,
+                    data.nomor,
+                    '<button class="btn btn-outline-primary mt-10 mb-10" onclick=detaildata("'+ data.IDCustomer +'")>Blok</button>'
+                    + '<button class="btn btn-outline-success mt-10 mb-10" onclick=tampildata("'+ data.IDCustomer +'")>Edit</button>'
+                    + '<button class="btn btn-danger mt-10 mb-10" onclick=hapusdata("'+ data.IDCustomer +'") >Delete</button>'
+                  
+                  ]).draw(false);                
+                })
+              } else {
+              $(".dataTables_empty").text("Tidak ada data yang ditampilkan.")}
             },
             error: function (xhr, status, error) {
               alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
@@ -223,6 +180,7 @@
                 type: 'POST',
                 data: {id: id},
                 success: function (response) {
+                  alert('Data Berhasil Dihapus!');
                   window.location = "<?php echo base_url() ?>index.php/Main/customer";
                 },
                 error: function () {
@@ -242,29 +200,10 @@
               var response = JSON.parse(response);
               response.forEach((data)=>{
                 $('#editmodal').modal();
-                $("#id-customer1").val(data.IDCustomer);
+                $("#id_customer1").val(data.IDCustomer);
                 $('#nama1').val(data.nama);
                 $('#email1').val(data.email);
                 $('#nomor1').val(data.nomor);
-                $('#updatedata').click(function editdata() {
-                
-                var inputid = document.getElementById("id-customer1").value
-                var inputnama = document.getElementById("nama1").value
-                var inputemail = document.getElementById("email1").value
-                var inputnomor = document.getElementById("nomor1").value
-                
-                  $.ajax({
-                    url: "<?php echo base_url()?>index.php/Main/update_customer/",
-                    type: 'POST',
-                    data: {id:inputid, nama:inputnama, email:inputemail,nomor:inputnomor},
-                    success: function (response) {
-                      window.location = "<?php echo base_url() ?>index.php/Main/customer";
-                    },
-                    error: function () {
-                      console.log("gagal update");
-                    }
-                  });
-                });
               })                
             },
             error: function () {
@@ -273,17 +212,41 @@
           });          
         }
 
+        function updatedata(e) {
+                
+          var inputid = document.getElementById("id_customer1").value
+          var inputnama = document.getElementById("nama1").value
+          var inputemail = document.getElementById("email1").value
+          var inputnomor = document.getElementById("nomor1").value
+          
+          $.ajax({
+            url: "<?php echo base_url()?>index.php/Main/update_customer/",
+            type: 'POST',
+            data: {id:inputid, nama:inputnama, email:inputemail,nomor:inputnomor},
+            success: function (response) {
+              alert('Data Berhasil Diedit!');
+              window.location = "<?php echo base_url() ?>index.php/Main/customer";
+            },
+            error: function () {
+              console.log("gagal update");
+            }
+          });
+        };
         function insertdata() {
-          var inputid = document.getElementById("id-customer").value
           var inputnama = document.getElementById("nama").value
           var inputnomor = document.getElementById("nomor").value
           var inputemail = document.getElementById("email").value
-          
+
+          $(document).on('submit', '#form', function (event) {
+          event.preventDefault();
+          $("#submit").prop("disabled", true);
+
           $.ajax({
             url: "<?php echo base_url()?>index.php/Main/insert_customer/",
             type: 'POST',
-            data: {id:inputid, nama:inputnama, nomor:inputnomor, email:inputemail},
+            data: {nama:inputnama, nomor:inputnomor, email:inputemail},
             success: function (response) {
+              alert('Data Berhasil Ditambahkan!');
               window.location = "<?php echo base_url() ?>index.php/Main/customer";
             },
             error: function () {
@@ -291,9 +254,10 @@
             }
           });
 
+       
+        });
         }
-
-        function detaildata(id) {
+        function detaildata(id) { 
           $.ajax({
             url: "<?php echo base_url()?>index.php/Main/create_cookie_encrypt",
             type: 'POST',

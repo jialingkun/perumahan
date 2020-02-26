@@ -11,21 +11,11 @@
 
             <div class="card-body" style="background-color: #FFFFFF;">
                 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                    <button class="btn btn-primary" data-toggle="modal" data-target="#addmodal">Add</button>
-                    <form class="d-none d-sm-inline-block form-inline ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" id="searchbox" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                    <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                    </button>
-                            </div>
-                        </div>
-                    </form>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#addmodal">Add</button>                    
                 </div>
 
                 <!--table-->
-                <table id="table" class="display">
+                <table id="table1" class="table table-striped table-bordered nowrap" style="width:100%">
                     <thead>
                         <tr>
                             <th>Nama Perumahan</th>
@@ -42,43 +32,7 @@
         </div>
         </div>
         <!-- /.container-fluid -->
-
-         <!-- modal edit -->
-         <div class="modal fade" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="editTitle" aria-hidden="true">
-          <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title w-100 text-center" id="editTitle">Edit Blokail Det</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <form>         
-                    <div class="form-group">
-                        <label for="perumahan1" class="col-form-label">Nama Perumahan:</label>
-                        <select class="custom-select" id="perumahan1">                            
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="cluster1" class="col-form-label">Nama Cluster:</label>
-                        <select class="custom-select" id="cluster1">                            
-                        </select>
-                    </div>                  
-                    <div class="form-group">
-                        <label for="blok1" class="col-form-label">Nama Blok:</label>
-                        <input type="text" class="form-control" id="blok1" readonly>
-                    </div>                    
-                </form>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="updatedata">Update</button>
-              </div>
-            </div>
-          </div>
-        </div> 
-
+        
         <!-- modal add -->
         <div class="modal fade" id="addmodal" tabindex="-1" role="dialog" aria-labelledby="editTitle" aria-hidden="true">
           <div class="modal-dialog modal-lg" role="document">
@@ -93,73 +47,34 @@
                 <form>                  
                   <div class="form-group">
                     <label for="perumahan" class="col-form-label">Nama Perumahan:</label>
-                    <select class="custom-select" id="perumahan">                
+                    <select class="custom-select" id="perumahan">
+                      <option selected value="default">Perumahan</option>
                     </select>
                   </div>
                   <div class="form-group">
                     <label for="cluster" class="col-form-label">Nama Cluster:</label>
                     <select class="custom-select" id="cluster">
+                      <option selected value="default">Cluster</option>
                     </select>
                   </div>
                   <div class="form-group">
                     <label for="blok" class="col-form-label">Nama Blok:</label>
                     <select class="custom-select" id="blok">
+                      <option selected value="default">Blok</option>
                     </select>
                   </div>               
                 </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" onclick="insertdata()">Add</button>
+                <button type="button" class="btn btn-primary" onclick="insertdata(event)">Add</button>
               </div>
             </div>
           </div>
         </div>  
 
-
-
       </div>
       <!-- End of Main Content -->
-
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2019</span>
-          </div>
-        </div>
-      </footer>
-      <!-- End of Footer -->
-
-    </div>
-    <!-- End of Content Wrapper -->
-
-    </div>
-    <!-- End of Page Wrapper -->
-
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-        <i class="fas fa-angle-up"></i>
-    </a>
-
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-            <a class="btn btn-primary" href="<?=base_url("index.php/Main/logoutuser");?>">Logout</a>
-            </div>
-        </div>
-        </div>
-    </div>
 
     <!-- Bootstrap core JavaScript-->
     <script src="<?php echo base_url('dist/vendor/jquery/jquery.min.js');?>"></script>
@@ -170,9 +85,16 @@
 
     <!-- Custom scripts for all pages-->
     <script src="<?php echo base_url('dist/js/sb-admin-2.min.js');?>"></script>
+    
+    <!-- responsive  -->
+    <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/responsive.bootstrap.min.js"></script>
 
-	<script src="<?php echo base_url('dist/vendor/datatables/jquery.dataTables.js');?>"></script>
-	<script src="<?php echo base_url('dist/js/table.js');?>"></script>
+    <script src="<?php echo base_url('dist/vendor/datatables/jquery.dataTables.js');?>"></script>
+    <script src="<?php echo base_url('dist/js/table.js');?>"></script>
 
     <script>
       $.ajax({
@@ -185,7 +107,7 @@
           })
         },
         error: function (xhr, status, error) {
-          alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
+          alert('Terdapat Kesalahan Pada Server...');
           $("#submit").prop("disabled", false);
         }
       });
@@ -224,7 +146,7 @@
             })
           },
           error: function (xhr, status, error) {
-            alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
+            alert('Terdapat Kesalahan Pada Server...');
             $("#submit").prop("disabled", false);
           }
         });
@@ -236,46 +158,54 @@
           type: 'POST',
           data: {id: id},
           success: function (json) {
-            $("#cluster option[value!=default]").remove();
+            $("#blok option[value!=default]").remove();
             var response = JSON.parse(json);
             response.forEach((data)=>{
-              $('#cluster').append(new Option(data.IDBlok, data.IDBlok))
+              if(data.IDCustomer == null) {
+                $('#blok').append(new Option(data.nama_blok, data.IDBlok))
+              }
             })
           },
           error: function (xhr, status, error) {
-            alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
+            alert('Terdapat Kesalahan Pada Server...');
             $("#submit").prop("disabled", false);
           }
         });
       }
       
     $(document).ready(function () { 
-      dTable = $('#table').DataTable();
+      dTable = $('#table1').DataTable({
+        responsive: true
+      });
       get_data();
     });
 
     function get_data(){
     //   var data = get_filter_value()
-
+    $(".dataTables_empty").text("Loading...")
       $.ajax({
         url: "<?php echo base_url() ?>index.php/Main/get_my_blok/",
         type: 'POST',
         success: function (json) {
           var response = JSON.parse(json);
-              var no = 0;
+            var no = 0;
+            if(response.length > 0){
               response.forEach((data)=>{
                 no++;
                 dTable.row.add([
                   data.nama_perumahan,
                   data.nama_cluster,
-                  data.IDBlok,
-									 '<button class="btn btn-danger mt-10 mb-10"><a onclick=hapusdata("'+ data.IDBlok +'") >Delete</a></button>'
+                  data.nama_blok,
+                  '<button class="btn btn-danger mt-10 mb-10" onclick=hapusdata("'+ data.IDBlok +'") >Delete</button>'
                 
                 ]).draw(false);                
-              })
+              }) 
+            } else{
+                $(".dataTables_empty").text("Tidak ada data yang ditampilkan.")
+              }
         },    
         error: function (xhr, status, error) {
-          alert(status + '- ' + xhr.status + ': ' + xhr.statusText);
+          alert('Terdapat Kesalahan Pada Server...');
           $("#submit").prop("disabled", false);
         }
       });
@@ -291,6 +221,7 @@
           data: {id: id},
           success: function (response) {
               console.log(response);
+              alert('Blok Customer Berhasil Dihapus!');
               window.location = "<?php echo base_url() ?>index.php/Main/blokdetail";
 
           },
@@ -302,63 +233,28 @@
       }
     }
 
-    function tampildata(id) {
-      $.ajax({
-        url: "<?php echo base_url()?>index.php/Main/get_blok_by_id",
-        type: 'POST',
-        data: {id: id},
-        success: function (response) {
-          var response = JSON.parse(response);
-          console.log('ooo');
-          response.forEach((data)=>{
-            $('#editmodal').modal();
-            $('#nama-blok1').val(data.IDBlok);
-            $('#perumahan1').val(data.IDPerumahan);
-            $('#cluster1').append(new Option(data.nama_cluster, data.IDCluster))
-            $('#nama-customer1').val(data.IDCustomer);
-            $('#harga1').val(data.Harga);
-            // console.log(response);
-            $('#updatedata').click(function editdata() {
-            
-            var inputperumahan = document.getElementById("perumahan1").value
-            var inputcluster = document.getElementById("cluster1").value
-            var inputid = document.getElementById("nama-blok1").value
-            var inputcust = document.getElementById("nama-customer1").value
-            var inputharga = document.getElementById("harga1").value
-                               
-              $.ajax({
-                url: "<?php echo base_url()?>index.php/Main/update_blok/",
-                type: 'POST',
-                data: {customer:inputcust, id:inputid, perumahan:inputperumahan, cluster:inputcluster, harga:inputharga},
-                success: function (response) {                           
-                  window.location = "<?php echo base_url() ?>index.php/Main/blok";
-                },
-                error: function () {
-                  console.log("gagal update");
-                }
-              });
-            });
-          })                
-        },
-        error: function () {
-            console.log("gagal tampil");
-        }
-      });          
-    }
-
-    function insertdata() {
-      var inputid = document.getElementById("id-cluster").value
+    
+    function insertdata(e) {
+      var inputblok = document.getElementById("blok").value
       var inputperum = document.getElementById("perumahan").value
       var inputcluster = document.getElementById("cluster").value
 
-      console.log(inputcluster);
+      if(inputblok == "default"
+         || inputperum == "default"
+         || inputcluster == "default"){
+           e.preventDefault();
+           alert("Input all the requirement");
+           return;
+         }
+
       $.ajax({
-        url: "<?php echo base_url()?>index.php/Main/",
+        url: "<?php echo base_url()?>index.php/Main/insert_blok_detail",
         type: 'POST',
-        data: {id:inputid, perum:inputperum, cluster:inputcluster, harga:inputharga},
+        data: {perum:inputperum, cluster:inputcluster, blok:inputblok},
         success: function (response) {
           console.log(response);
-          window.location = "<?php echo base_url() ?>index.php/Main/blok";
+          alert('Blok Customer Berhasil Ditambahkan!');
+          window.location = "<?php echo base_url() ?>index.php/Main/blokdetail";
         },
         error: function () {
           console.log("gagal update");
@@ -366,7 +262,6 @@
       });
 
     }
-
 
     </script>
 
