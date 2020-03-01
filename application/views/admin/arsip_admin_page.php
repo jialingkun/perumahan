@@ -18,7 +18,7 @@
           </div>
 
 					<!--table-->
-					<table id="table1" class="table table-striped table-bordered nowrap" style="width:100%">
+					<table id="table1" class="table table-striped table-bordered" style="width:100%">
 						<thead>
 							<tr>
 								<th>Bulan Iuran</th>
@@ -72,6 +72,7 @@
 
 	<script src="<?php echo base_url('dist/vendor/datatables/jquery.dataTables.js');?>"></script>
 	<script src="<?php echo base_url('dist/js/table.js');?>"></script>
+  <link href="<?php echo base_url('dist/vendor/datetimepicker/css/bootstrap-datepicker3.css');?>" rel="stylesheet" type="text/css">
 	<script src="<?php echo base_url('dist/vendor/datetimepicker/js/bootstrap-datepicker.min.js');?>"></script>
 	<script>
 		$('.input-daterange').datepicker({

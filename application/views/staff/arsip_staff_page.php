@@ -20,7 +20,7 @@
             </div>
 
             <!--table-->
-            <table id="table1" class="table table-striped table-bordered nowrap" style="width:100%">
+            <table id="table1" class="table table-striped table-bordered" style="width:100%">
               <thead>
                 <tr>
                   <th>ID Nota</th>
@@ -117,6 +117,7 @@
         success: function (json) {
           dTable.clear().draw();
           var response = JSON.parse(json);
+          console.log(response)
           if(response.length > 0){
             response.forEach((data)=>{
               dTable.row.add([
