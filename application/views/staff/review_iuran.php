@@ -1,5 +1,5 @@
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
+ <!-- Begin Page Content -->
+ <div class="container-fluid">
         
         <div class="card shadow mb-12">
           <div class="card-header py-3">
@@ -107,6 +107,7 @@
         ?>;
 
         var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var monthNumber = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "91", "92", "93"];
         var data = {id:[]};
         idtagihan.forEach((datum)=>{
             data.id.push(datum);
@@ -131,15 +132,28 @@
                         ]).draw(false);
                         total_tagihan += parseInt(data.Harga)
                     })
-                    var harga = <?php echo $harga;?>;
+                    var harga = <?php if($harga !=null) echo $harga; else echo 0;?>;
                     for(var i = startYear; i <= endYear; i++){
-                        for(var j = startMonth; j <= endMonth; j++){
-                            dTable.row.add([
-                                months[j]+' '+ i,
-                                harga
-                            ]).draw(false);
-                            total_tagihan += parseInt(harga)
-                            manualSubmit.push({month:months[j],year:i})
+                        if(i < endYear){
+                            for(var j = startMonth; j< 12; j++){
+                                dTable.row.add([
+                                    months[j]+' '+ i,
+                                    harga
+                                ]).draw(false);
+                                total_tagihan += parseInt(harga)
+                                manualSubmit.push({month:monthNumber[j],year:i})
+                            }
+                            startMonth = 0;
+                        } else{
+                            console.log(startMonth)
+                            for(var j = startMonth; j <= endMonth; j++){
+                                dTable.row.add([
+                                    months[j]+' '+ i,
+                                    harga
+                                ]).draw(false);
+                                total_tagihan += parseInt(harga)
+                                manualSubmit.push({month:monthNumber[j],year:i})
+                            }
                         }
                     }
                 } else{
@@ -163,7 +177,8 @@
                 $.ajax({
                     type: "POST",
                     url: "<?php echo base_url() ?>index.php/Main/tagihanmanual",
-                    data: {data: manualSubmit, id: '<?php echo $id?>', harga:'<?php echo $harga;?>'},
+                    
+                    data: {data: manualSubmit, id: '<?php echo ($id!=null) ?  $id : "" ?>', harga:'<?php echo ($harga!=null) ?  $harga : "" ?>'},
                     success: function (response) {
                         resolve("Stuff worked!");
                         
@@ -182,7 +197,7 @@
                 if(manualSubmit.length > 0){
                     manualSubmit.forEach((datum)=>{
                         if(datum != ""){
-                            var idtagihan = <?php echo $id?> + datum.month + datum.year
+                            var idtagihan = <?php echo ($id!=null) ?  $id : "" ?> + datum.month + datum.year
                             data.id.push(idtagihan)
                         }
                     })
