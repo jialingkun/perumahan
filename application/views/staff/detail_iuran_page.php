@@ -7,6 +7,7 @@
             <!-- Page Heading -->
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                 <h1 class="h1 mb-0 text-gray-800 ">Tanggungan Iuran</h1>
+                <a class="btn btn-danger btn-fill pull-right" type="submit" href="<?=base_url("index.php/Main/cetak_pdf_now/" );?>" target="_blank">PDF</a>
             </div>
 
             <div class="card-body" style="background-color: #FFFFFF;">
@@ -70,6 +71,7 @@
                 responsive:true
             });
             $(".dataTables_empty").text("Loading...")
+            saveidpdf();
 
             var a = [];
 
@@ -79,10 +81,51 @@
                 data: data,
                 success: function (json) {
                 var response = JSON.parse(json);
+                var angkabln;
                 if(response.length > 0){
                     response.forEach((data)=>{
+
+                        switch(data.bulan){
+                        case '1':
+                        angkabln = 'January';
+                        break;
+                        case '2':
+                        angkabln = 'Febuary';
+                        break;
+                        case '3':
+                        angkabln = 'March';
+                        break;
+                        case '4':
+                        angkabln = 'April';
+                        break;
+                        case '5':
+                        angkabln = 'May';
+                        break;
+                        case '6':
+                        angkabln = 'June';
+                        break;
+                        case '7':
+                        angkabln = 'July';
+                        break;
+                        case '8':
+                        angkabln = 'August';
+                        break;
+                        case '9':
+                        angkabln = 'September';
+                        break;
+                        case '10':
+                        angkabln = 'October';
+                        break;
+                        case '11':
+                        angkabln = 'November';
+                        break;
+                        case '12':
+                        angkabln = 'December';
+                        break;
+                    }
+
                         dTable.row.add([
-                        data.bulan+' '+ data.tahun, 
+                        angkabln+' '+ data.tahun, 
                         data.Harga,
                         '<input type="checkbox" name="bayar" class="tagihan" value="'+data.IDTagihan+'"></input>'
                         ]).draw(false);
@@ -114,6 +157,7 @@
             })
         });
 
+        console.log(data);
 
         function submit(e){
             e.preventDefault();
@@ -176,6 +220,29 @@
                 form.submit();
             }
         }
+
+        var idpdf = <?php echo $idBlok?>;
+
+        function saveidpdf() {
+            $.ajax({
+            url: "<?php echo base_url()?>index.php/Main/create_cookie_encrypt",
+            type: 'POST',
+            data:{name: "idpdf", value:idpdf},
+            success: function (response) {
+              console.log(response); 
+                  
+
+            },
+            error: function () {
+              console.log("gagal update");
+              alert('Data gagal diambil!');
+
+            }
+
+          });
+        }
+
+
     </script>
 
 </body>
