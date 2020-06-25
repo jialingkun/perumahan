@@ -31,25 +31,17 @@ class Main extends CI_Controller {
 	}	
 
 	//Dashboard admin
-	public function dashboardadmin(){
+	public function dashboard(){
 		if ($this->checkcookieuser()) {
 			$this->load->view('header');
 			$this->load->view('admin/dashboard');
 			$this->load->view('footer');
-		}else{
-			header("Location: ".base_url()."index.php/login");
-			die();
-		}
-	}
-
-	//Dashboard staff
-	public function dashboardstaff(){
-		if ($this->checkcookiestaff()) {
+		}else if ($this->checkcookiestaff()) {
 			$this->load->view('header1');
 			$this->load->view('staff/blok_page');
 			$this->load->view('footer');
 		}else{
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -65,7 +57,7 @@ class Main extends CI_Controller {
 			$this->load->view('admin/profile_page');
 			$this->load->view('footer');
 		}else{
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -81,7 +73,7 @@ class Main extends CI_Controller {
 			$this->load->view('staff/change_password');
 			$this->load->view('footer');
 		}else {
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -93,7 +85,7 @@ class Main extends CI_Controller {
 			$this->load->view('admin/cluster_page');
 			$this->load->view('footer');
 		}else{
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -105,7 +97,7 @@ class Main extends CI_Controller {
 			$this->load->view('admin/blok_page');
 			$this->load->view('footer');
 		}else{
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -117,7 +109,7 @@ class Main extends CI_Controller {
 			$this->load->view('admin/blok_detail_page');
 			$this->load->view('footer');
 		}else{
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -129,7 +121,7 @@ class Main extends CI_Controller {
 			$this->load->view('admin/customer_page');	
 			$this->load->view('footer');
 		}else{
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -139,9 +131,9 @@ class Main extends CI_Controller {
 		if ($this->checkcookieuser()) {
 			$this->load->view('header');
 			$this->load->view('admin/staff_page');	
-			$this->load->view('footer');	
+			$this->load->view('footer');	 
 		}else{
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -160,7 +152,7 @@ class Main extends CI_Controller {
 			$this->load->view('staff/arsip_staff_page', $data);
 			$this->load->view('footer');
 		}else {
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -172,7 +164,7 @@ class Main extends CI_Controller {
 			$this->load->view('admin/arsip_page');
 			$this->load->view('footer');
 		}else {
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -182,16 +174,18 @@ class Main extends CI_Controller {
 		$idBlok = $this->input->post('id');
 		if ($this->checkcookieuser()) {
 			$data['idBlok'] = $idBlok;
+			$c = $this->create_cookie_encrypt("idblok",$idBlok);
 			$this->load->view('header');
 			$this->load->view('admin/tagihan_page',$data);
 			$this->load->view('footer');
 		} else if ($this->checkcookiestaff()) {
 			$data['idBlok'] = $idBlok;
+			$c = $this->create_cookie_encrypt("idblok",$idBlok);
 			$this->load->view('header1');
 			$this->load->view('staff/detail_iuran_page',$data);
 			$this->load->view('footer');
 		}else{
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -212,10 +206,23 @@ class Main extends CI_Controller {
 				$data['harga'] = null;
 			}
 			$this->load->view('header1');
-			$this->load->view('staff/review_iuran',$data);
+			$this->load->view('review_iuran',$data);
+			$this->load->view('footer');
+		}else if ($this->checkcookieuser()) {
+			$data['idTagihan'] = $idTagihan;
+			$data['manual'] = $manual;
+			if($id != null){
+				$data['id'] = $id;
+				$data['harga'] = $this->BlokModel->get_harga($id);
+			} else{
+				$data['id'] = null;
+				$data['harga'] = null;
+			}
+			$this->load->view('header');
+			$this->load->view('review_iuran',$data);
 			$this->load->view('footer');
 		}else{
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -227,7 +234,7 @@ class Main extends CI_Controller {
 			$this->load->view('admin/add_tagihan');
 			$this->load->view('footer');
 		}else{
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -243,7 +250,7 @@ class Main extends CI_Controller {
 			$this->load->view('staff/blok_page');
 			$this->load->view('footer');
 		}else {
-			header("Location: ".base_url()."index.php/login");
+			header("Location: ".base_url()."index.php/");
 			die();
 		}
 	}
@@ -767,31 +774,50 @@ class Main extends CI_Controller {
 		if ($this->checkcookieuser()) {
 			$all = $this->TagihanModel->get_all_tagihan();
 
-			$coba = $this->input->post('id');
-			$kondisi = '';
+			$blok = $this->input->post('blok');
+			$tahun = $this->input->post('tahun');
+			$bulan = $this->input->post('bulan');
+			$jmlbulan = count($bulan);
 
-			foreach($all as $satuan){
-				if($coba == $satuan['IDTagihan']){					
-					// echo "Data Tagihan Sudah Ada!";
-					$kondisi = 'ada';
-					break;
-				} 					
+			$kondisi = '';
+			$coba = '';
+			$posisi = 0;
+			// echo ;
+			foreach($bulan as $blnmsk){
+				$thnini = $tahun[$posisi];
+				$coba = $blok.$blnmsk.$thnini; 
+				foreach($all as $satuan){
+					if($coba == $satuan['IDTagihan']){					
+						// echo "Data Tagihan Sudah Ada!";
+						$kondisi = 'ada';
+						break;
+					} 					
+				}
+				$posisi = $posisi + 1;
+				$coba = '';
 			}
+			
+			$posisi = 0;
 
 			if($kondisi == 'ada') {
 				echo 'Data sudah ada!';
-
 			} else {
-				$data = array(
-					'IDTagihan' => $this->input->post('id'),
-					'IDBlok' => $this->input->post('blok'),
-					'bulan' => $this->input->post('bulan'),
-					'tahun' => $this->input->post('tahun'),
-					'Harga' => $this->input->post('harga'),
-					'status' => '0'					
-				);
-				$insertStatus = $this->TagihanModel->insert_tagihan($data);	
-				echo 'Data Berhasil Ditambahkan!';
+				foreach($bulan as $blnnya){
+					$thninput = $tahun[$posisi];
+					$data = array(
+						'IDTagihan' => $blok.$blnnya.$thninput,
+						'IDBlok' => $this->input->post('blok'),
+						'bulan' => $blnnya,
+						'tahun' => $thninput,
+						'Harga' => $this->input->post('harga'),
+						'status' => '0'					
+					);
+					$insertStatus = $this->TagihanModel->insert_tagihan($data);	
+					$posisi = $posisi + 1;
+
+				}
+					echo 'Data Berhasil Ditambahkan!';
+
 			}
 					
 			$kondisi = '';
@@ -802,42 +828,47 @@ class Main extends CI_Controller {
 	}
 
 	public function tagihanmanual(){
+		$username = "";
 		if($this->checkcookiestaff()){
 			$username = $this->get_cookie_decrypt("staffCookie");
-			$data = $this->input->post('data');
-			$blok = $this->input->post('id');
-			$harga = $this->input->post('harga');
-			$idsementara = '';
-			$all = $this->TagihanModel->get_all_tagihan();
-			$kondisi = '';
+		} else if($this->checkcookieuser()){
+			$username = $this->get_cookie_decrypt("adminCookie");
+		}else{
+			die();
+		}
+		$data = $this->input->post('data');
+		$blok = $this->input->post('id');
+		$harga = $this->input->post('harga');
+		$keterangan = $this->input->post('keterangan');
+		$idsementara = '';
+		$all = $this->TagihanModel->get_all_tagihan();
+		$kondisi = '';
 
-			foreach($data as $monthYear){
-				$idsementara = $idsementara.$blok.$monthYear['month'].$monthYear['year'];
+		foreach($data as $monthYear){
+			$idsementara = $idsementara.$blok.$monthYear['month'].$monthYear['year'];
 
-				foreach($all as $satuan){
-					if($idsementara == $satuan['IDTagihan']){					
-						$kondisi = 'ada';
-						break;
-					} 					
-				}
-
-				if($kondisi == 'ada'){
-
-				} else {
-					$tagihan = array(
-							'IDTagihan' => $blok.$monthYear['month'].$monthYear['year'],
-							'IDBlok' => $blok,
-							'bulan' => $monthYear['month'],
-							'tahun' => $monthYear['year'],
-							'harga' => $harga
-						);
-					$this->TagihanModel->insert_tagihan($tagihan);
-				}
-
-				$idsementara = '';
-				$kondisi='';
-
+			foreach($all as $satuan){
+				if($idsementara == $satuan['IDTagihan']){					
+					$kondisi = 'ada';
+					break;
+				} 					
 			}
+			if($kondisi == 'ada'){
+
+			} else {
+				$tagihan = array(
+						'IDTagihan' => $blok.$monthYear['month'].$monthYear['year'],
+						'IDBlok' => $blok,
+						'bulan' => $monthYear['month'],
+						'tahun' => $monthYear['year'],
+						'harga' => $harga
+					);
+				$this->TagihanModel->insert_tagihan($tagihan);
+			}
+
+			$idsementara = '';
+			$kondisi='';
+
 		}
 	}
 
@@ -1005,19 +1036,28 @@ class Main extends CI_Controller {
 	}
 	
 	public function do_bayar(){
+		$username = "";
 		if($this->checkcookiestaff()){
 			$username = $this->get_cookie_decrypt("staffCookie");
+		}else if($this->checkcookieuser()){
+			$username = $this->get_cookie_decrypt('adminCookie');
+		}else{
+			die();
+		}
 			$id = $this->input->post("id");
 			$diskon = $this->input->post("diskon");
 			$total_awal = $this->input->post("total_awal");
-			$this->TagihanModel->update_status($id);
-			$notaID = $this->NotaModel->insert_one($username,$total_awal,$diskon);
-			$this->NotaDetailModel->insert_one($notaID, $id);		
-			$c = $this->create_cookie_encrypt("idcetak",$notaID);	
-	
-			echo $notaID;
-		}
-
+			$keterangan = $this->input->post("keterangan");
+			try{
+				$this->TagihanModel->update_status($id);
+				$notaID = $this->NotaModel->insert_one($username,$total_awal,$diskon, $keterangan);
+				$this->NotaDetailModel->insert_one($notaID, $id);
+				$c = $this->create_cookie_encrypt("idcetak",$notaID);
+		
+				echo $notaID;
+			} catch(Exception $e){
+				echo "error";
+			}
 	}
 
 	public function view_pdf(){
@@ -1292,7 +1332,7 @@ class Main extends CI_Controller {
 		$this->load->helper('cookie');
 		$cookie= array(
 			'name'   => $name,
-			'value'  => str_rot13($value), //Not really encrypt anything, just jumble text :P
+			'value'  => $this->str_rot($value), //Not really encrypt anything, just jumble text :P
 			'expire' => $expire
 		);
 		$this->input->set_cookie($cookie);
@@ -1305,7 +1345,7 @@ class Main extends CI_Controller {
 	public function get_cookie_decrypt($name){
 		$this->load->helper('cookie');
 		if ($this->input->cookie($name,true)!=NULL) {
-			return str_rot13($this->input->cookie($name,true));
+			return $this->str_rot($this->input->cookie($name,true));
 		}else{
 			return null;
 		}
@@ -1339,12 +1379,29 @@ class Main extends CI_Controller {
         }
 	}
 
+	public function cek_data_empty(){
+		$id = $this->input->post('id');
+		$data = $this->TagihanModel->jmlblnpdf($id);
+		$kondisi = '';
+
+		foreach($data as $cek){
+			if($cek->status == '0'){
+				$kondisi = 'ada';
+			}
+		}
+
+		if($kondisi != 'ada'){
+			echo 'kosong';
+		}
+
+	}
+
 	//fungsi tambah tagihan bulanan
 	public function input_transaksi(){
-		$jml =  $this->input->post('jml');
-		$cust = $this->input->post('arr');
-		$bulan = $this->input->post('bulan');
-		$tahun = $this->input->post('tahun');
+		$dt = new DateTime(null, new DateTimeZone('Asia/Jakarta')); 
+		$bulan = $dt->format('n');
+		$tahun = $dt->format('Y');
+
 		$idsementara = '';
 		$nilaiharga = '';
 		$harga1 = '';
@@ -1352,36 +1409,37 @@ class Main extends CI_Controller {
 		$blok1 = '';
 		$kondisi = '';
 
+		$data = $this->TagihanModel->sortirblok();
 		$all = $this->TagihanModel->get_all_tagihan();
 
-		
-		foreach($cust as $hasil) {
-			$nilaiharga = json_encode($hasil['Harga']);
-			$nilaiblok = json_encode($hasil['IDBlok']);
-			$number = str_replace('"', "", $nilaiharga);
-			$harga1 = intval($number);
-			$blok1 = str_replace('"', "", $nilaiblok);
-			$idsementara = $idsementara.$blok1.$bulan.$tahun;
+		foreach($data as $hasil) {
+			if(json_encode($hasil->IDCustomer) != null){
+				$nilaiharga = json_encode($hasil->Harga);
+				$nilaiblok = json_encode($hasil->IDBlok);
+				$number = str_replace('"', "", $nilaiharga);
+				$harga1 = intval($number);
+				$blok1 = str_replace('"', "", $nilaiblok);
+				$idsementara = $idsementara.$blok1.$bulan.$tahun;
 
+				foreach($all as $satuan){
+					if($idsementara == $satuan['IDTagihan']){					
+						$kondisi = 'ada';
+						break;
+					} 					
+				}
 
-			foreach($all as $satuan){
-				if($idsementara == $satuan['IDTagihan']){					
-					$kondisi = 'ada';
-					break;
-				} 					
-			}
-
-			if($kondisi == 'ada') {
-			} else {
-				$data = array(
-					'IDTagihan' => $idsementara,
-					'IDBlok' => $blok1,
-					'bulan' => $bulan,
-					'tahun' => $tahun,
-					'Harga' => $harga1,
-					'status' => '0'			
-				);
-				$insertStatus = $this->TagihanModel->insert_tagihan($data);	
+				if($kondisi == 'ada') {
+				} else {
+					$data = array(
+						'IDTagihan' => $idsementara,
+						'IDBlok' => $blok1,
+						'bulan' => $bulan,
+						'tahun' => $tahun,
+						'Harga' => $harga1,
+						'status' => '0'			
+					);
+					$insertStatus = $this->TagihanModel->insert_tagihan($data);	
+				}
 			}
 			
 			$idsementara = '';
@@ -1389,10 +1447,24 @@ class Main extends CI_Controller {
 			$harga1 = '';
 			$nilaiblok = '';
 			$blok1 = '';
-			$kondisi = '';
-			
+			$kondisi = '';		
 		}
+	}
 
+
+	public function str_rot($s, $n = 13) {
+		static $letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+		$n = (int)$n % 26;
+		if (!$n) return $s;
+		for ($i = 0, $l = strlen($s); $i < $l; $i++) {
+			$c = $s[$i];
+			if ($c >= 'a' && $c <= 'z') {
+				$s[$i] = $letters[(ord($c) - 71 + $n) % 26];
+			} else if ($c >= 'A' && $c <= 'Z') {
+				$s[$i] = $letters[(ord($c) - 39 + $n) % 26 + 26];
+			}
+		}
+		return $s;
 	}
 
 
@@ -1687,9 +1759,9 @@ class Main extends CI_Controller {
 			$c_pdf->Cell(55,8, $namabulan ,0,0, 'L');
 			$c_pdf->Cell(7,8, ': '.$okee ,0,0, 'L');
 			$c_pdf->Cell(25,8, 'bulan x  Rp.',0,0, 'L');
-			$c_pdf->Cell(12,8,  str_replace('"', "",json_encode($dataharga[$t-1][1])) ,0,0, 'L');
+			$c_pdf->Cell(12,8,  number_format(str_replace('"', "",json_encode($dataharga[$t-1][1])), 0, ',', '.') ,0,0, 'L');
 			$c_pdf->Cell(28,8, ': Total   =  Rp.',0,0, 'L');
-			$c_pdf->Cell(15,8, $totalakhir ,0,1, 'L');
+			$c_pdf->Cell(15,8, number_format($totalakhir, 0, ',', '.') ,0,1, 'L');
 			$okee=0;
 		}
 
@@ -1697,13 +1769,13 @@ class Main extends CI_Controller {
 
 		$c_pdf->Cell(10);
         $c_pdf->Cell(48,8, 'Jumlah Rupiah       : Rp.',0,0, 'L');
-		$c_pdf->Cell(40,8, $data[0]->total_awal ,0,1, 'L');
+		$c_pdf->Cell(40,8, number_format($data[0]->total_awal, 0, ',', '.') ,0,1, 'L');
 		    
 		$c_pdf->Cell(10,10, '', 0,1);
         $c_pdf->Cell(10);
         $c_pdf->SetFont('Arial', '', '12');
 		$c_pdf->Cell(115,7, 'Yang Menyerahkan,',0,0, 'L');
-		$c_pdf->Cell(80,7, 'Surabaya, '.$dt->format('Y-m-d'),0,1, 'L');
+		$c_pdf->Cell(80,7, 'Surabaya, '.$dt->format('d F Y'),0,1, 'L');
 		
         $c_pdf->SetFont('Arial','','10');
 		$c_pdf->Cell(10);       
@@ -1932,25 +2004,29 @@ class Main extends CI_Controller {
 			$c_pdf->Cell(55,8, $namabulan ,0,0, 'L');
 			$c_pdf->Cell(7,8, ': '.$okee ,0,0, 'L');
 			$c_pdf->Cell(25,8, 'bulan x  Rp.',0,0, 'L');
-			$c_pdf->Cell(12,8,  str_replace('"', "",json_encode($dataharga[$t-1][1])) ,0,0, 'L');
+			$c_pdf->Cell(12,8,  number_format(str_replace('"', "",json_encode($dataharga[$t-1][1])), 0, ',', '.') ,0,0, 'L');
 			$c_pdf->Cell(28,8, ': Total   =  Rp.',0,0, 'L');
-			$c_pdf->Cell(15,8, $totalakhir ,0,1, 'L');
+			$c_pdf->Cell(15,8, number_format($totalakhir, 0, ',', '.') ,0,1, 'L');
 			$okee=0;
 		}
 
 		$c_pdf->Cell(10);
         $c_pdf->Cell(48,8, 'Total diskon            : Rp.',0,0, 'L');
-		$c_pdf->Cell(40,8, $data[0]->diskon ,0,1, 'L');
+		$c_pdf->Cell(40,8, number_format($data[0]->diskon, 0, ',', '.') ,0,1, 'L');
+
+		$c_pdf->Cell(10);
+        $c_pdf->Cell(40,8, 'Keterangan             :',0,0, 'L');
+		$c_pdf->MultiCell(100,8, $data[0]->keterangan_diskon ,0, 'L');
 
 		$c_pdf->Cell(10);
         $c_pdf->Cell(48,8, 'Jumlah Rupiah       : Rp.',0,0, 'L');
-		$c_pdf->Cell(40,8, $data[0]->total_setelah_diskon ,0,1, 'L');	
+		$c_pdf->Cell(40,8, number_format($data[0]->total_setelah_diskon, 0, ',', '.') ,0,1, 'L');	
         
 		$c_pdf->Cell(10,10, '', 0,1);
         $c_pdf->Cell(10);
         $c_pdf->SetFont('Arial', '', '12');
 		$c_pdf->Cell(115,7, 'Yang Menyerahkan,',0,0, 'L');
-		$c_pdf->Cell(80,7, 'Surabaya, '.$dt->format('Y-m-d'),0,1, 'L');
+		$c_pdf->Cell(80,7, 'Surabaya, '.$dt->format('d F Y'),0,1, 'L');
 		
         $c_pdf->SetFont('Arial','','10');
 		$c_pdf->Cell(10);       
@@ -1974,12 +2050,15 @@ class Main extends CI_Controller {
 	
 	public function cetak_pdf_now(){
 		$username = $this->get_cookie_decrypt("idpdf");
+		$blok = $this->get_cookie_decrypt("idblok");
 		$data = $this->TagihanModel->pdf_now($username);
 		$bulannya = $this->TagihanModel->jmlblnpdf($username);
+		$namauser = $this->StaffModel->get_user_pdf($blok);
 		$dt = new DateTime(null, new DateTimeZone('Asia/Jakarta')); 
 		$c_pdf = $this->pdf->getInstance();
 		$hargatotal = 0;
-		
+		$namastaff = str_replace('"', "",json_encode($namauser[0]["nama_user"]));
+
 		$no = 1;
 		$abc = 0;
 		$jml = 0;
@@ -2203,9 +2282,9 @@ class Main extends CI_Controller {
 				$c_pdf->Cell(55,8, $namabulan ,0,0, 'L');
 				$c_pdf->Cell(7,8, ': '.$okee ,0,0, 'L');
 				$c_pdf->Cell(25,8, 'bulan x  Rp.',0,0, 'L');
-				$c_pdf->Cell(12,8,  str_replace('"', "",json_encode($dataharga[$t-1][1])) ,0,0, 'L');
+				$c_pdf->Cell(12,8,  number_format(str_replace('"', "",json_encode($dataharga[$t-1][1])), 0, ',', '.') ,0,0, 'L');
 				$c_pdf->Cell(28,8, ': Total   =  Rp.',0,0, 'L');
-				$c_pdf->Cell(15,8, $totalakhir ,0,1, 'L');
+				$c_pdf->Cell(15,8, number_format($totalakhir, 0, ',', '.') ,0,1, 'L');
 				
 				$okee=0;
 
@@ -2246,9 +2325,9 @@ class Main extends CI_Controller {
 				$c_pdf->Cell(55,8, $namabulan ,0,0, 'L');
 				$c_pdf->Cell(7,8, ': '.$okee ,0,0, 'L');
 				$c_pdf->Cell(25,8, 'bulan x  Rp.',0,0, 'L');
-				$c_pdf->Cell(12,8,  str_replace('"', "",json_encode($dataharga[$t-1][1])) ,0,0, 'L');
+				$c_pdf->Cell(12,8,  number_format(str_replace('"', "",json_encode($dataharga[$t-1][1])), 0, ',', '.') ,0,0, 'L');
 				$c_pdf->Cell(28,8, ': Total   =  Rp.',0,0, 'L');
-				$c_pdf->Cell(15,8, $totalakhir ,0,1, 'L');
+				$c_pdf->Cell(15,8, number_format($totalakhir, 0, ',', '.') ,0,1, 'L');
 				
 				$okee=0;
 
@@ -2257,13 +2336,13 @@ class Main extends CI_Controller {
 
 		$c_pdf->Cell(10);
         $c_pdf->Cell(48,8, 'Jumlah Rupiah       : Rp.',0,0, 'L');
-		$c_pdf->Cell(40,8, $hargatotal,0,1, 'L');
+		$c_pdf->Cell(40,8, number_format($hargatotal, 0, ',', '.'),0,1, 'L');
 		    
 		$c_pdf->Cell(10,10, '', 0,1);
         $c_pdf->Cell(10);
         $c_pdf->SetFont('Arial', '', '12');
 		$c_pdf->Cell(115,7, 'Yang Menyerahkan,',0,0, 'L');
-		$c_pdf->Cell(80,7, 'Surabaya, '.$dt->format('Y-m-d'),0,1, 'L');
+		$c_pdf->Cell(80,7, 'Surabaya, '.$dt->format('d F Y'),0,1, 'L');
 		
         $c_pdf->SetFont('Arial','','10');
 		$c_pdf->Cell(10);       
@@ -2274,7 +2353,7 @@ class Main extends CI_Controller {
         $c_pdf->Cell(10,15,'',0,1);
         $c_pdf->Cell(10);
         $c_pdf->SetFont('Arial','','12');
-		$c_pdf->Cell(115,5, '('.$data[0]->nama_user.')',0,0); 
+		$c_pdf->Cell(115,5, '('.$namastaff.')',0,0); 
 		$c_pdf->Cell(100,5, '('.$data[0]->nama.')',0,0);
 		   
 		$caca = "";
