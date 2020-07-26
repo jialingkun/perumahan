@@ -95,19 +95,31 @@
         e.preventDefault();
         if($("#fl-perumahan").val() != "default"){
           getClusterofPerumahan($("#fl-perumahan").val(), function(){
-            get_transaksi()
+            // get_transaksi()
+            info()
             console.log($("#fl-cluster").val())
           });
         }
         else{
           $("#fl-cluster option[value!=default]").remove();
-          get_transaksi();
+          dTable.clear().draw();
+          $(".dataTables_empty").text("Silahkan Pilih Perumahan...")
+          // get_transaksi()
         }
       });
 
       $("#fl-cluster").change(function (e) { 
         e.preventDefault();
-        get_transaksi();
+     
+        var cluster = $("#fl-cluster").val();
+        if(cluster == "default"){
+          cluster = null;
+          dTable.clear().draw();
+          $(".dataTables_empty").text("Silahkan Pilih Cluster...")
+
+        } else {
+          get_transaksi();
+        }        
       });
       
       function getClusterofPerumahan(id,callback){
@@ -162,17 +174,22 @@
           var response = JSON.parse(json);
           if(response.length > 0){
             dTable.clear().draw();
-            response.forEach((data)=>{
-            
-                dTable.row.add([
-                data.nama, 
-                data.nama_blok,
-                
-                '<button class="btn btn-outline-primary mt-10 mb-10" onclick=goToArsip("'+data.IDBlok+'")>Arsip</button></a>'
-                + '<button class="btn btn-outline-success mt-10 mb-10" onclick=goToTagihan("'+data.IDBlok+'")>Tagihan</button></a>'
-              ]).draw(false);
-              
-            })
+            console.log(data);
+           
+              response.forEach((data)=>{
+                if(data.nama != null){
+                  dTable.row.add([
+                  data.nama, 
+                  data.nama_blok,                
+                  '<button class="btn btn-outline-primary mt-10 mb-10" onclick=goToArsip("'+data.IDBlok+'")>Arsip</button></a>'
+                  + '<button class="btn btn-outline-success mt-10 mb-10" onclick=goToTagihan("'+data.IDBlok+'")>Tagihan</button></a>'
+                ]).draw(false);
+                } else {
+                  console.log('masuk');
+                }
+              })
+           
+
           } else{
             $(".dataTables_empty").text("Tidak ada data yang ditampilkan.")
           }
@@ -236,8 +253,14 @@
       dTable = $('#table1').DataTable({
         responsive: true
       });
-      get_transaksi();
+      $(".dataTables_empty").text("Silahkan Pilih Perumahan...")
+      // get_transaksi();
     });
+
+    function info(){
+      dTable.clear().draw();
+      $(".dataTables_empty").text("Silahkan Pilih Cluster...")
+    }
 
   </script>
 

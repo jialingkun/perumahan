@@ -184,19 +184,32 @@
         e.preventDefault();
         if($("#fl-perumahan").val() != "default"){
           getClusterofPerumahan($("#fl-perumahan").val(), function(){
-            get_data()
+            // get_data()
+            info()
             console.log($("#fl-cluster").val())
           });
         }
         else{
           $("#fl-cluster option[value!=default]").remove();
-          get_data()
+          dTable.clear().draw();
+          $(".dataTables_empty").text("Silahkan Pilih Perumahan...")
+
+          // get_data()
         }
       });
 
       $("#fl-cluster").change(function (e) { 
         e.preventDefault();
-        get_data();
+     
+        var cluster = $("#fl-cluster").val();
+        if(cluster == "default"){
+          cluster = null;
+          dTable.clear().draw();
+          $(".dataTables_empty").text("Silahkan Pilih Cluster...")
+
+        } else {
+          get_data();
+        }        
       });
 
 //perumahan1
@@ -225,12 +238,12 @@
       else{
         $("#cluster option[value!=default]").remove();
       }
-      get_data();
+      // get_data();
     });
 
     $("#cluster").change(function (e) { 
       e.preventDefault();
-      get_data();
+      // get_data();
     });
 
 
@@ -283,8 +296,15 @@
       dTable = $('#table1').DataTable({
         responsive: true
       });
-      get_data()
+      $(".dataTables_empty").text("Silahkan Pilih Perumahan...")
+
+      // get_data()
     });
+
+    function info(){
+      dTable.clear().draw();
+      $(".dataTables_empty").text("Silahkan Pilih Cluster...")
+    }
 
     function get_data(){
       $(".dataTables_empty").text("Loading...")
